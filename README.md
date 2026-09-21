@@ -21,6 +21,12 @@ first if a change made there should stick. The tray menu provides Settings, Paus
 now, and Exit. Closing the window keeps the app running. Start at sign-in is optional. The window
 uses the dark Fluent theme and your Windows accent colour.
 
+On startup, the app checks this repository's latest GitHub release and shows a banner in the window
+if a newer stable version is available; **View release** opens its release page. The check is a
+single anonymous request to GitHub's public releases API — no other data is sent, and it never
+blocks startup or the audio enforcement path. It only runs outside demo mode, and a failed or
+offline check is silently skipped.
+
 - Manual Windows device changes are also reversed while protection is enabled. Pause first to make
   a temporary change, or change your preferences in SoundAnchor.
 - Unplugging a preferred device preserves the preference. Windows may select a temporary replacement;
@@ -63,7 +69,8 @@ registration and offers to remove saved preferences and logs. Silent uninstall r
 Portable users should turn off start at sign-in and exit before deleting the extracted directory.
 
 Preferences/logs: `%LOCALAPPDATA%\SoundAnchor`. Demo data: `%LOCALAPPDATA%\SoundAnchor-Demo`.
-Diagnostic logs are local and size-limited. There is no network service or telemetry in the app.
+Diagnostic logs are local and size-limited. There is no telemetry in the app. The only outbound
+network call is the startup check against GitHub's public releases API described above.
 
 ## Project documentation
 

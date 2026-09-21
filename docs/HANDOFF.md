@@ -1,4 +1,35 @@
-# Latest change: dark Fluent UI, clearer wording and optional code signing
+# Latest change: removed the window Restore button, added a startup update check
+
+The user felt the window's **Restore now** button was redundant — enforcement already reacts to
+device-change notifications, a 15-second health check, and system resume, so a manual re-trigger
+added nothing the tray menu's own **Restore now** item didn't already cover — and asked for an
+in-app notice when a newer GitHub release exists. This release (0.3.0 to **0.4.0**, minor:
+user-visible features, no behaviour change to enforcement):
+
+- **Removed the window's Restore now button** (`RestoreButton`/`RestoreClicked`) from the bottom
+  action bar. The tray context menu keeps its own **Restore now** item; `EnforcementWorker.Refresh()`
+  is unchanged and still runs from the periodic health check and on system resume.
+- **Update check.** `SoundAnchor.Core.UpdateChecker`/`GitHubReleaseSource` query
+  `api.github.com/repos/rm968211/sound-anchor/releases/latest` (which already excludes drafts and
+  prereleases) once at startup, outside demo mode only, with a 5-second timeout and every failure
+  mode (offline, rate-limited, malformed body) swallowed rather than surfaced. A newer version shows
+  an accent banner above the status card with a **View release** button that opens the release page.
+  The current version is read from the build's `AssemblyInformationalVersion` (set from
+  `version.props`), so a locally built binary ahead of the last release shows no banner.
+
+Verified on 2026-09-21 with .NET SDK 10.0.401 on Windows 11: clean Release build with zero warnings,
+**35 unit/integration tests passed** (13 new `UpdateCheckerTests`, parsing and swallowed-failure
+cases), the **FlaUI desktop scenario passed** against the trimmed action bar. The live update path
+was also verified end to end against the real repository with a throwaway console probe (not
+committed): an older current version correctly resolved `0.3.0` with its release URL, and current
+(`0.3.0`) and ahead-of-latest (`9.9.9`) versions both correctly returned no update. The banner's
+visual layout was confirmed with a temporary env-var override forcing the check in demo mode,
+removed before commit. **Not verified:** behavior when GitHub is genuinely rate-limiting or when
+DNS/network is fully unavailable on a locked-down machine — the exception filter in
+`UpdateChecker.CheckAsync` covers `HttpRequestException`/`TaskCanceledException`/`JsonException`,
+which should cover both, but only real request failures and malformed JSON were exercised.
+
+# Previous change: dark Fluent UI, clearer wording and optional code signing
 
 The user reported four UI problems and asked about the installer's unknown-publisher warning. This
 release (0.2.0 to **0.3.0**, minor: user-visible features, no behaviour change to enforcement):

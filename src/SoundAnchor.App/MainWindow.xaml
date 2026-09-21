@@ -5,13 +5,18 @@
         <Button DockPanel.Dock="Right" Content="Sound control panel" Padding="16,9" MinHeight="38" VerticalAlignment="Center" ToolTip="Opens the Windows Sound control panel. Pause protection first if you want a change there to stick." AutomationProperties.AutomationId="SoundControlPanelButton" Click="SoundControlPanelClicked"/>
         <Button Content="Save and apply" Padding="16,9" Margin="0,0,8,0" MinHeight="38" Style="{DynamicResource AccentButtonStyle}" AutomationProperties.AutomationId="ApplyButton" Click="ApplyClicked"/>
         <Button x:Name="PauseButton" Content="Pause" Padding="16,9" Margin="0,0,8,0" MinHeight="38" AutomationProperties.AutomationId="PauseButton" Click="PauseClicked"/>
-        <Button Content="Restore now" Padding="16,9" Margin="0,0,8,0" MinHeight="38" AutomationProperties.AutomationId="RestoreButton" Click="RestoreClicked"/>
       </DockPanel>
     </Border>
     <ScrollViewer VerticalScrollBarVisibility="Auto">
       <StackPanel Margin="30,26,30,20">
         <TextBlock Text="Keep your sound where it belongs." FontSize="26" FontWeight="SemiBold" Margin="0,0,0,8"/>
         <TextBlock Text="Pick the devices you want. SoundAnchor puts them back whenever Windows switches to something else." Foreground="{DynamicResource TextFillColorSecondaryBrush}" Margin="0,0,0,16"/>
+        <Border x:Name="UpdateBanner" CornerRadius="8" Padding="14,11" Margin="0,0,0,14" Background="{DynamicResource AccentFillColorDefaultBrush}" Visibility="Collapsed" AutomationProperties.AutomationId="UpdateBanner">
+          <DockPanel LastChildFill="False">
+            <TextBlock x:Name="UpdateBannerText" DockPanel.Dock="Left" VerticalAlignment="Center" Foreground="{DynamicResource TextOnAccentFillColorPrimaryBrush}" AutomationProperties.AutomationId="UpdateBannerText"/>
+            <Button DockPanel.Dock="Right" Content="View release" Padding="12,6" MinHeight="30" AutomationProperties.AutomationId="UpdateBannerButton" Click="UpdateBannerClicked"/>
+          </DockPanel>
+        </Border>
         <Border CornerRadius="8" Padding="16,13" Margin="0,0,0,14" Background="{DynamicResource CardBackgroundFillColorDefaultBrush}" BorderBrush="{DynamicResource CardStrokeColorDefaultBrush}" BorderThickness="1">
           <StackPanel>
             <TextBlock x:Name="StatusText" FontWeight="SemiBold" AutomationProperties.AutomationId="StatusText"/>
