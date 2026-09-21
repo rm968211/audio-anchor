@@ -1,4 +1,65 @@
-# Latest change: 1.0 — status card fix, installer wording, protection color
+# Latest change: renamed SoundAnchor to AudioAnchor
+
+The user discovered "SoundAnchor" is already the name of unrelated existing software and asked for
+a full rename to **AudioAnchor**. This release (1.0.0 to **2.0.0**, major — chosen because renaming
+changes the installed product's identity: a machine with an old SoundAnchor install left behind an
+orphaned `SoundAnchor.exe` and an orphaned "SoundAnchor" startup registry value after upgrading,
+since Inno's file/registry cleanup only removes what the *new* version references; not applicable
+in practice yet since there are no real external installs, only the developer's own test installs,
+but the version number should say so regardless):
+
+- **GitHub repository renamed**: `rm968211/sound-anchor` → `rm968211/audio-anchor` via
+  `gh repo rename`. GitHub auto-redirects the old clone URL, web URL, and existing release asset
+  links indefinitely, so nothing that already links to the old name breaks.
+- **Local working directory renamed** to match:
+  `C:\devl\repositories\sound-anchor` → `C:\devl\repositories\audio-anchor`, plus
+  `git remote set-url` and a `git config --global --add safe.directory` entry for the moved path
+  (Windows/Git flags a directory as "dubious ownership" when it's moved, unrelated to the rename
+  itself — a standard, safe trust declaration, not a security downgrade).
+- **Every project folder and file renamed** via `git mv` (preserves history): `AudioAnchor.slnx`,
+  `installer/AudioAnchor.iss`, and all six `src`/`tests` project folders plus their `.csproj` files
+  (`AudioAnchor.App`, `.Core`, `.Windows`, `.Tests`, `.UiTests`, `.HardwareProbe`).
+- **All source, docs, and scripts updated** with a scripted, case-aware replace (`SoundAnchor` →
+  `AudioAnchor`, `soundanchor` → `audioanchor`, `SOUNDANCHOR` → `AUDIOANCHOR`, `sound-anchor` →
+  `audio-anchor`) across every tracked non-binary file — namespaces, `x:Class`/XAML references,
+  `AssemblyName`/`Authors`/`Copyright`, the installer's `AppName`/`AppPublisherURL`/
+  `DefaultDirName`/`DefaultGroupName`/`OutputBaseFilename`, environment variable names
+  (`SOUNDANCHOR_EXE`/`SOUNDANCHOR_TEST_RESULTS` → `AUDIOANCHOR_EXE`/`AUDIOANCHOR_TEST_RESULTS`),
+  the tray/window/dialog text, the startup registry value name, the `%LOCALAPPDATA%` data folder
+  names, and — critically — the GitHub owner/repo string `GitHubReleaseSource` uses to build the
+  update-check URL (`MainWindow.xaml.cs`), so the update checker calls the renamed repository's real
+  API endpoint rather than relying on GitHub's redirect for API calls.
+- **`installer/AudioAnchor.iss`'s `AppId` GUID was deliberately left unchanged.** Inno matches
+  "is this an upgrade of the same product" by `AppId`, not by `AppName`, so keeping the same GUID
+  is what makes a future AudioAnchor release correctly upgrade-in-place over an AudioAnchor install
+  made right after this rename, rather than installing side-by-side. It does NOT make upgrading
+  cleanly over an *old SoundAnchor-named* install possible — see the orphaned-files note above.
+- **`docs/PLAN.md` deliberately NOT renamed.** It's a frozen historical record of the original
+  approved plan and is left exactly as written under the original name, consistent with how the
+  file already treats its own superseded content; a new amendment note was added at its top instead
+  (matching the existing "Current release-policy amendment" pattern in that file).
+- **Two verbatim historical quotes in this file's own older entries were excluded from the rename**
+  and manually restored: the literal filename `soundanchor logo.png` the user supplied on
+  2026-09-21, and the literal `SOUNDANCHOR` XAML eyebrow text quoted while describing its removal —
+  both describe exact artifacts as they existed at that point in time, not the current state.
+
+**Not done / left to the user:** no attempt to migrate or clean up any pre-existing
+`%LOCALAPPDATA%\SoundAnchor` data folder, `SoundAnchor.exe`, or "SoundAnchor" startup registry value
+this development machine's earlier test installs may have left behind — there's no installed
+product surface (SoundAnchor was never distributed beyond this developer's own testing) to make
+migration logic worth building. Manually remove them if desired; a fresh AudioAnchor install/run
+creates its own separate `%LOCALAPPDATA%\AudioAnchor` and does not read the old location.
+
+**Known conflict, more serious than prior version-number conflicts:** `simplify-readme` and
+`noncommercial-license` were both branched from the pre-rename master (1.0.0) and touch README.md,
+AGENTS.md, docs/HANDOFF.md, installer/SoundAnchor.iss, and version.props under the *old* paths and
+name. Recommend merging this rename PR first — then rebasing those two on top only needs a
+version-number conflict resolution and a straightforward text merge (their content doesn't touch
+file/folder paths, which this PR is the only one that moves). Merging either of them first instead
+means this rename PR would need to redo the equivalent of their content changes against the new
+file paths.
+
+# Previous change: 1.0 — status card fix, installer wording, protection color
 
 Follow-up to the logo PR, added to the same branch before merge. This release (0.5.0 to **1.0.0**,
 the user's explicit choice — not a semver-meaning bump, just the version they asked for):
@@ -14,10 +75,10 @@ the user's explicit choice — not a semver-meaning bump, just the version they 
   amber, protected → green, nothing configured → the default neutral card). Colors are static,
   frozen `SolidColorBrush`es chosen independent of the Fluent accent color, so the signal reads the
   same regardless of the user's Windows accent.
-- **Installer wording.** The startup task's checkbox description changed from "Start SoundAnchor
-  when I sign in" to "Start SoundAnchor when I sign into Windows," per the user's request. Only the
+- **Installer wording.** The startup task's checkbox description changed from "Start AudioAnchor
+  when I sign in" to "Start AudioAnchor when I sign into Windows," per the user's request. Only the
   installer task changed; the in-app checkbox (`MainWindow.xaml`'s `StartupCheck`) still reads
-  "Start SoundAnchor when I sign in" — not asked to be changed.
+  "Start AudioAnchor when I sign in" — not asked to be changed.
 
 Verified on 2026-09-21 with .NET SDK 10.0.401 on Windows 11: clean Release build with zero
 warnings, all 35 unit/integration tests and the FlaUI desktop scenario pass. Screenshotted three
@@ -29,7 +90,7 @@ writes any), and demo-mode paused (amber card). Did not screenshot the error-red
 a forced audio failure) or rebuild+reverify the installer wizard banners from the prior PR (unrelated
 to this change, not touched).
 
-# Previous change: applied the user's SoundAnchor logo everywhere
+# Previous change: applied the user's AudioAnchor logo everywhere
 
 The user supplied `soundanchor logo.png`/`.ico` (a blue anchor with a sound waveform through the
 shank) from their desktop and asked for it applied everywhere appropriate. This release (0.4.0 to
@@ -39,13 +100,13 @@ shank) from their desktop and asked for it applied everywhere appropriate. This 
   supplied `.ico` was 1.07 MB (uncompressed large frames) and made Inno Setup's resource updater
   fail with "File is too large" when used as `SetupIconFile`; it was re-encoded from the PNG with
   Pillow (`Image.save(..., sizes=[16..256])`) to the same 7 resolutions at ~56 KB, pixel-identical.
-- `SoundAnchor.App.csproj` sets `<ApplicationIcon>` from `assets/icon.ico` (linked into the project
+- `AudioAnchor.App.csproj` sets `<ApplicationIcon>` from `assets/icon.ico` (linked into the project
   as `Assets/icon.ico`) — this is the exe's Win32 icon resource, shown in Explorer, the taskbar, and
   Alt-Tab, and it flows through to the portable ZIP and the installed app automatically.
 - `MainWindow.xaml` sets `Icon="Assets/icon.ico"` (title bar/taskbar), and the tray `NotifyIcon` now
   loads the same embedded resource via `Application.GetResourceStream` instead of
   `SystemIcons.Application`, disposed on exit alongside the other IDisposables.
-- `installer/SoundAnchor.iss` sets `SetupIconFile` (the installer/uninstaller's own icon) and
+- `installer/AudioAnchor.iss` sets `SetupIconFile` (the installer/uninstaller's own icon) and
   `WizardImageFile`/`WizardSmallImageFile`, two Pillow-generated BMP banners
   (`assets/installer-wizard-large.bmp` 164×314, `-small.bmp` 55×58, white background, logo
   centered) built once from the same source PNG — regenerate them from the PNG rather than
@@ -81,8 +142,8 @@ user-visible features, no behaviour change to enforcement):
 - **Removed the window's Restore now button** (`RestoreButton`/`RestoreClicked`) from the bottom
   action bar. The tray context menu keeps its own **Restore now** item; `EnforcementWorker.Refresh()`
   is unchanged and still runs from the periodic health check and on system resume.
-- **Update check.** `SoundAnchor.Core.UpdateChecker`/`GitHubReleaseSource` query
-  `api.github.com/repos/rm968211/sound-anchor/releases/latest` (which already excludes drafts and
+- **Update check.** `AudioAnchor.Core.UpdateChecker`/`GitHubReleaseSource` query
+  `api.github.com/repos/rm968211/audio-anchor/releases/latest` (which already excludes drafts and
   prereleases) once at startup, outside demo mode only, with a 5-second timeout and every failure
   mode (offline, rate-limited, malformed body) swallowed rather than surfaced. A newer version shows
   an accent banner above the status card with a **View release** button that opens the release page.
@@ -114,7 +175,7 @@ release (0.2.0 to **0.3.0**, minor: user-visible features, no behaviour change t
 - **One title.** The `SOUNDANCHOR` eyebrow above the heading duplicated the title bar and was
   clipped at the top of the window; it is gone, leaving a single heading with proper top spacing.
 - **Clearer status lines.** The text under each selector no longer repeats Console/Multimedia role
-  names and device names. It describes what SoundAnchor is doing in plain language, reporting the
+  names and device names. It describes what AudioAnchor is doing in plain language, reporting the
   slot that needs attention most when Console and Multimedia disagree.
 - **Sound control panel button** in a docked bottom bar with the existing actions, opening the
   classic Sound control panel (`control.exe mmsys.cpl,,0`), which still owns per-role defaults.
@@ -126,22 +187,22 @@ release (0.2.0 to **0.3.0**, minor: user-visible features, no behaviour change t
 Verified on 2026-09-21 with .NET SDK 10.0.401 on Windows 11: clean Release build with zero warnings,
 **22 unit/integration tests passed**, the **FlaUI desktop scenario passed** against the new layout,
 31 versioning tests passed, and packaging produced 0.3.0 installer and portable packages. Signing was
-smoke-tested with a temporary self-signed certificate: `SoundAnchor.exe`, `uninst.e32` and the setup
+smoke-tested with a temporary self-signed certificate: `AudioAnchor.exe`, `uninst.e32` and the setup
 were all signed, `Get-AuthenticodeSignature` reported the expected signer, and the certificate was
 then deleted. **Not verified:** signing with a real CA-issued certificate, and whether SmartScreen
 stops warning — both need a purchased or granted certificate. `scripts/Test-Releases.ps1` still
 requires PowerShell 7 (`pwsh`); under Windows PowerShell 5.1 it fails in `ConvertFrom-Json` property
 access, on master as well as here, so CI remains its source of truth.
 
-# SoundAnchor — continuation handoff
+# AudioAnchor — continuation handoff
 
 ## Canonical locations
 
-- Local repository: **C:\devl\repositories\sound-anchor** (the user's explicitly requested location).
-- Public remote: **https://github.com/rm968211/sound-anchor**.
+- Local repository: **C:\devl\repositories\audio-anchor** (the user's explicitly requested location).
+- Public remote: **https://github.com/rm968211/audio-anchor**.
 - Full approved scope: [PLAN.md](PLAN.md). Agent entry point: [../AGENTS.md](../AGENTS.md).
 - Tested implementation commit: **87cfc4b** (plus this documentation-only follow-up).
-- Successful CI: https://github.com/rm968211/sound-anchor/actions/runs/35622237568
+- Successful CI: https://github.com/rm968211/audio-anchor/actions/runs/35622237568
 
 The repository was moved in full from the generated Codex workspace. Do not recreate it there.
 The user approved implementation, private repo creation, full test automation, installers/uninstall,
@@ -209,7 +270,7 @@ Set DOTNET_ROOT and prepend it to PATH. The NuGet cache and CLI home are adjacen
 Inno compiler is `.tools/inno/ISCC.exe`; scripts can bootstrap its pinned, verified release.
 
 The repository was originally created by the sandbox account. When using the host account, use a
-process-scoped Git safe.directory for C:/devl/repositories/sound-anchor if necessary; never wildcard
+process-scoped Git safe.directory for C:/devl/repositories/audio-anchor if necessary; never wildcard
 global trust. The generated task's sandbox does not automatically grant writes to C:\devl, so use
 the authorized filesystem approval mechanism or open this repository as a Codex project.
 

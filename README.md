@@ -1,6 +1,6 @@
-<p align="center"><img src="assets/logo.png" width="160" alt="SoundAnchor logo"></p>
+<p align="center"><img src="assets/logo.png" width="160" alt="AudioAnchor logo"></p>
 
-# SoundAnchor
+# AudioAnchor
 
 A Windows tray app that restores your preferred speakers and microphones whenever Windows changes
 the default audio devices. Windows 11 x64; built with C#/.NET 10 and WPF.
@@ -9,7 +9,7 @@ the default audio devices. Windows 11 x64; built with C#/.NET 10 and WPF.
 
 Download the installer or portable ZIP from this repository's **Actions → Build, test and release**
 artifacts, or from the Releases page. Extract the portable ZIP before
-running `SoundAnchor.exe`; a separate .NET installation is not required.
+running `AudioAnchor.exe`; a separate .NET installation is not required.
 
 Builds are unsigned, so Windows reports an unknown publisher during installation. Verify the
 download against `SHA256SUMS.txt` and choose **More info → Run anyway**, or see
@@ -17,7 +17,7 @@ download against `SHA256SUMS.txt` and choose **More info → Run anyway**, or se
 
 Choose ordinary playback, communications playback, recording, and communications recording, then
 click **Save and apply**. Each selection can also be left unmanaged. Ordinary playback and recording
-cover both Console and Multimedia roles. The line under each selector says what SoundAnchor is doing
+cover both Console and Multimedia roles. The line under each selector says what AudioAnchor is doing
 with that choice. **Sound control panel** opens the classic Windows Sound dialog; pause protection
 first if a change made there should stick. The tray menu provides Settings, Pause/Resume, Restore
 now, and Exit. Closing the window keeps the app running. Start at sign-in is optional. The window
@@ -30,9 +30,9 @@ blocks startup or the audio enforcement path. It only runs outside demo mode, an
 offline check is silently skipped.
 
 - Manual Windows device changes are also reversed while protection is enabled. Pause first to make
-  a temporary change, or change your preferences in SoundAnchor.
+  a temporary change, or change your preferences in AudioAnchor.
 - Unplugging a preferred device preserves the preference. Windows may select a temporary replacement;
-  SoundAnchor restores the original endpoint when it reconnects.
+  AudioAnchor restores the original endpoint when it reconnects.
 - A driver that changes an endpoint's identity requires reselection; the app does not guess by name.
 - A brief interruption can happen before correction. Apps with explicit audio routing may ignore the
   Windows default. The app does not change volumes, mute, formats, or per-app routes.
@@ -55,7 +55,7 @@ Packages go to `artifacts/packages`.
 For a safe interactive preview:
 
 ```powershell
-dotnet run --project src/SoundAnchor.App -- --demo
+dotnet run --project src/AudioAnchor.App -- --demo
 ```
 
 Demo mode uses simulated devices and separate preferences; it cannot change real audio defaults or
@@ -70,7 +70,7 @@ preferences are preserved. Uninstall from Windows Installed apps. The uninstalle
 registration and offers to remove saved preferences and logs. Silent uninstall retains preferences.
 Portable users should turn off start at sign-in and exit before deleting the extracted directory.
 
-Preferences/logs: `%LOCALAPPDATA%\SoundAnchor`. Demo data: `%LOCALAPPDATA%\SoundAnchor-Demo`.
+Preferences/logs: `%LOCALAPPDATA%\AudioAnchor`. Demo data: `%LOCALAPPDATA%\AudioAnchor-Demo`.
 Diagnostic logs are local and size-limited. There is no telemetry in the app. The only outbound
 network call is the startup check against GitHub's public releases API described above.
 
@@ -82,7 +82,7 @@ file, so replacing it updates every surface at once. `assets/logo.png` is the sa
 resolution for documentation. `assets/installer-wizard-large.bmp` and `-small.bmp` are pre-rendered
 Inno Setup wizard banners generated from the logo; regenerate them (`Image.save(..., sizes=...)`
 with Pillow) rather than hand-editing, since Inno Setup's resource updater rejects an oversized
-`SetupIconFile` (see the comment in `installer/SoundAnchor.iss`).
+`SetupIconFile` (see the comment in `installer/AudioAnchor.iss`).
 
 ## Project documentation
 
@@ -93,7 +93,7 @@ with Pillow) rather than hand-editing, since Inno Setup's resource updater rejec
 - [Agent instructions](AGENTS.md)
 
 The audio setter uses the undocumented Windows `IPolicyConfig` COM interface; it is isolated in
-`SoundAnchor.Windows`. Future Windows changes may require updating that adapter. Endpoint monitoring
+`AudioAnchor.Windows`. Future Windows changes may require updating that adapter. Endpoint monitoring
 uses Microsoft's documented `IMMNotificationClient` callbacks. See PLAN.md for upstream references.
 
 ## Releases

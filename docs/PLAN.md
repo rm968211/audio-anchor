@@ -1,3 +1,11 @@
+# Current name
+
+The product and repository were renamed from SoundAnchor to **AudioAnchor** after discovering
+SoundAnchor was already the name of unrelated existing software. The GitHub repository moved to
+`rm968211/audio-anchor`; every current source file, script, and document uses AudioAnchor. This
+plan below is a frozen historical record of the original approval and is left exactly as written,
+under the original name, for that reason.
+
 # Current release-policy amendment
 
 The user subsequently required a public repository, master as the default branch, a mandatory developer-selected version.props increase on every PR, and automatic published GitHub releases after merged PRs pass tests. docs/VERSIONING.md governs releases and supersedes the original private/draft/tag-only plan below.

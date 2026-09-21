@@ -5,6 +5,6 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
     <Deterministic>true</Deterministic>
-    <Authors>SoundAnchor contributors</Authors>
+    <Authors>AudioAnchor contributors</Authors>
   </PropertyGroup>
 </Project>
