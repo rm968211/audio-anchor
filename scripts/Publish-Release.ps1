@@ -10,9 +10,9 @@ $merged = @($pullsJson | ConvertFrom-Json | Where-Object { $_.merged_at -and $_.
 if ($merged.Count -eq 0) { Write-Host 'No PR merged to master at this commit; no release will be published.'; return }
 
 $directory = $ArtifactDirectory
-gh run download $RunId -n SoundAnchor-win-x64 -D $directory
+gh run download $RunId -n AudioAnchor-win-x64 -D $directory
 if ($LASTEXITCODE) { throw 'Cannot download this run''s verified packages.' }
-$names = @("SoundAnchor-$Version-win-x64-Portable.zip", "SoundAnchor-$Version-win-x64-Setup.exe")
+$names = @("AudioAnchor-$Version-win-x64-Portable.zip", "AudioAnchor-$Version-win-x64-Setup.exe")
 $checksums = Get-Content -LiteralPath (Join-Path $directory 'SHA256SUMS.txt')
 foreach ($name in $names) {
     $entry = @($checksums | Where-Object { $_ -match ('\A[a-f0-9]{64}  ' + [regex]::Escape($name) + '\z') })
@@ -40,7 +40,7 @@ if ($existing.Count -gt 0) {
     }
 } else {
     # Stage assets in a draft, then publish only after the upload succeeds.
-    gh release create $tag --target $Commit --draft --title "SoundAnchor $tag" --generate-notes
+    gh release create $tag --target $Commit --draft --title "AudioAnchor $tag" --generate-notes
     if ($LASTEXITCODE) { throw 'Release creation failed.' }
 }
 $assets = @($names | ForEach-Object { Join-Path $directory $_ }) + (Join-Path $directory 'SHA256SUMS.txt')

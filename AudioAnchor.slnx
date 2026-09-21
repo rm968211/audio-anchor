@@ -1,0 +1,12 @@
+<Solution>
+  <Folder Name="/src/">
+    <Project Path="src/AudioAnchor.Core/AudioAnchor.Core.csproj" />
+    <Project Path="src/AudioAnchor.Windows/AudioAnchor.Windows.csproj" />
+    <Project Path="src/AudioAnchor.App/AudioAnchor.App.csproj" />
+  </Folder>
+  <Folder Name="/tests/">
+    <Project Path="tests/AudioAnchor.Tests/AudioAnchor.Tests.csproj" />
+    <Project Path="tests/AudioAnchor.UiTests/AudioAnchor.UiTests.csproj" />
+    <Project Path="tests/AudioAnchor.HardwareProbe/AudioAnchor.HardwareProbe.csproj" />
+  </Folder>
+</Solution>

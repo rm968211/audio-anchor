@@ -1,6 +1,6 @@
 # Version and release policy
 
-`version.props` is the single source of truth for SoundAnchor's product version. All projects import
+`version.props` is the single source of truth for AudioAnchor's product version. All projects import
 it through Directory.Build.props. Packaging reads it directly. There is no independent build-script,
 installer, or tag version override.
 
