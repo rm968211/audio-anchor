@@ -31,9 +31,13 @@ $releases = gh api "repos/$env:GH_REPO/releases?per_page=100"
 if ($LASTEXITCODE) { throw 'Cannot inspect existing releases.' }
 $existing = @($releases | ConvertFrom-Json | Where-Object tag_name -eq $tag)
 if ($existing.Count -gt 0) {
-    $tagCommit = gh api "repos/$env:GH_REPO/commits/$tag" --jq .sha
-    if ($LASTEXITCODE -or $tagCommit -ne $Commit) { throw 'This version already belongs to a different commit. Increase version.props.' }
-    if (-not $existing[0].draft) { Write-Host "Release $tag already published for this commit."; return }
+    # GitHub may not materialize a new tag until a draft is published.
+    if (-not $tagExists -and $existing[0].target_commitish -ne $Commit) { throw 'This draft version belongs to a different commit. Increase version.props.' }
+    if (-not $existing[0].draft) {
+        if (-not $tagExists) { throw 'Published release is missing its tag.' }
+        Write-Host "Release $tag already published for this commit."
+        return
+    }
 } else {
     # Stage assets in a draft, then publish only after the upload succeeds.
     gh release create $tag --target $Commit --draft --title "SoundAnchor $tag" --generate-notes
