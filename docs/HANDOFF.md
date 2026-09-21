@@ -1,61 +1,84 @@
-# Handoff — SoundAnchor
+# SoundAnchor — continuation handoff
 
-## Location and authorization
+## Canonical locations
 
-Canonical local repository: **C:\devl\repositories\sound-anchor**.
-Private remote: **https://github.com/rm968211/sound-anchor**.
-The user explicitly requested this location after initial creation in a generated Codex workspace.
-The repository was moved in full, including `.git`. Continue work here.
+- Local repository: **C:\devl\repositories\sound-anchor** (the user's explicitly requested location).
+- Private remote: **https://github.com/rm968211/sound-anchor**.
+- Full approved scope: [PLAN.md](PLAN.md). Agent entry point: [../AGENTS.md](../AGENTS.md).
+- Tested implementation commit: **87cfc4b** (plus this documentation-only follow-up).
+- Successful CI: https://github.com/rm968211/sound-anchor/actions/runs/35622237568
 
-The user approved the full plan in PLAN.md, implementation, private repo creation, installer/uninstall,
-Actions artifacts, appropriate unit testing and a complete automation suite. They asked for frequent
-updates and noted limited credits. Preserve concrete progress in commits and this document.
+The repository was moved in full from the generated Codex workspace. Do not recreate it there.
+The user approved implementation, private repo creation, full test automation, installers/uninstall,
+and Actions build artifacts. They requested frequent updates and durable context for future agents.
 
-## Latest verification (2026-09-21)
+## Delivered
 
-- Initial implementation committed and pushed as 90829c2.
-- After relocation: clean Release build, 22 unit/integration tests and 1 UI scenario passed.
-- Native enumeration passed: 85 endpoints and 6 defaults on the development machine.
-- Native setter reassertion passed for all six roles; no different audio device was selected.
-- Installer EXE and portable ZIP compiled successfully; lifecycle and hosted CI checks in progress.
-- Added startup-recovery UI fix so delayed audio enumeration retains saved selections.
+- Windows 11 x64 .NET 10 WPF settings/tray app with four device preferences covering all six roles.
+- Event-driven correction, verification, bounded retries, health reconciliation, pause/resume,
+  missing-device preservation, saved settings, startup option, single instance and resume handling.
+- Native Core Audio enumeration/notifications and isolated undocumented IPolicyConfig setter.
+- Simulated-audio demo/test mode, read-only native diagnostics, opt-in native hardware probe.
+- Self-contained portable ZIP and per-user Inno installer with upgrade/uninstall and startup cleanup.
+- Pinned GitHub Actions workflow, monthly Dependabot, installer lifecycle automation, draft-release
+  creation configured for version tags. No version tag/release has been published yet.
 
-## Implemented
+## Verified on 2026-09-21
 
-- Core six-role policy, event-driven serialized worker, retries, health checks, pause, settings/backup.
-- Native Windows Core Audio enumeration/defaults/notifications and isolated IPolicyConfig setter.
-- WPF settings window, tray, startup toggle, per-session single instance, resume handling, demo mode.
-- Unit/integration suite, FlaUI desktop automation, Inno installer and lifecycle test script.
-- Build/package scripts and CI/release workflow are being finalized.
+- Clean Release build, zero warnings/errors after relocation.
+- **22 unit/integration tests passed**, no skipped tests. Policy and settings classes reached 100%
+  line coverage; total Core line coverage was 75% (includes the demo backend and presentation summary).
+- **1 FlaUI desktop scenario passed**: selects all four preferences, applies, pauses, simulates a
+  switch, resumes, closes to tray, reopens, exits and verifies persistence after relaunch.
+- Native enumeration succeeded with 85 endpoints and 6 defaults on the development machine.
+- Native setter reassertion succeeded for **6/6 roles** without selecting a different device.
+- Installer install, startup registration, launch, same-version upgrade, preference preservation,
+  uninstall and startup cleanup passed locally and on GitHub's Windows runner.
+- CI built and uploaded installer, portable ZIP, checksums, TRX reports and coverage.
 
-## Verification performed before relocation
+The first CI run exposed a test-cleanup race that ran the uninstaller twice. Fixed in 87cfc4b;
+the subsequent complete pipeline passed. Native testing also identified stale device properties;
+enumeration now falls back to endpoint IDs when friendly names are unreadable. A startup UI fix
+preserves saved selections when device enumeration is initially unavailable.
 
-- Release solution build: succeeded with zero warnings/errors.
-- Unit/integration suite: **22 passed**, no skipped tests; coverage generated.
-- Desktop suite: **1 passed**, full select/apply/pause/simulate/reopen/relaunch scenario (~34 seconds).
-- Native diagnostic exposed an incorrect collection GUID, fixed and rebuilt.
-- A second native run exposed unreadable friendly-name properties on stale endpoints. Source fixed
-  to fall back to the endpoint ID; this fix still needs rebuilding and native verification.
-- No real audio defaults have been switched during the initial verification.
+## Build outputs
 
-## Outstanding checks
+Successful CI packages are downloaded to `artifacts/verified-packages` and SHA-256 verified.
+Copies are provided in the original task's `outputs` directory for clickable delivery:
+`C:\Users\rm968\Documents\Codex\2026-09-21\referenced-chatgpt-conversation-this-is-an\outputs`.
+Repository source remains exclusively at the canonical C:\devl location.
 
-Rebuild after remaining edits and relocation. Run native diagnostics and optionally the native
-setter probe. Build installer/portable packages, run installer automation, push commits, and inspect
-the first GitHub Actions run. Physical USB/HDMI/Bluetooth, sleep/resume, audio-service restart,
-Explorer restart, and actual cross-version upgrade remain hardware/manual acceptance items.
-Update this file after each completed check; do not call unrun checks passed.
+`artifacts/packages` contains the earlier local build; prefer the verified CI packages because they
+include the final startup UI fix. Generated artifacts and local toolchains are ignored by Git.
 
-## Toolchain / previous interruption
+## Remaining acceptance work / limits
 
-The parent Codex workspace contains `.NET SDK 10.0.401` under
+- Actual new USB/HDMI/Bluetooth connection tests, suspend/resume, audio-service/Explorer restart,
+  scaling checks, and an actual cross-version upgrade need physical/manual validation.
+- The opt-in hardware probe's real-switching mode is implemented but was not run. Only native
+  enumeration and reassertion of already-selected defaults were run.
+- Draft-release tag execution and code signing have not been exercised. Initial binaries are unsigned.
+- Default restoration reacts after Windows changes devices; a brief interruption remains possible.
+- Per-app routing, volume/mute/format controls, ARM64 and auto-updates are outside the first release.
+- Installer preference-removal prompt is implemented; silent uninstall preservation is automated.
+
+See [TESTING.md](TESTING.md) for commands and the full physical acceptance checklist. Do not report
+simulations or native reassertion as proof of physical hot-plug switching.
+
+## Local toolchain
+
+.NET SDK 10.0.401 is at:
 `C:\Users\rm968\Documents\Codex\2026-09-21\referenced-chatgpt-conversation-this-is-an\work\tools\dotnet`.
-Its NuGet package cache is the adjacent `nuget` folder. Use DOTNET_ROOT and PATH to select it.
-GitHub CLI: `C:\Program Files\GitHub CLI\gh.exe`. Host PATH can be stale.
-Git objects were created by the sandbox account. Use a process-scoped `safe.directory` Git config
-for the canonical path when running as the host user; avoid global wildcard trust.
+Set DOTNET_ROOT and prepend it to PATH. The NuGet cache and CLI home are adjacent `nuget` and
+`cli-home` directories. GitHub CLI is `C:\Program Files\GitHub CLI\gh.exe`.
+Inno compiler is `.tools/inno/ISCC.exe`; scripts can bootstrap its pinned, verified release.
 
-An earlier automatic approval check failed because of exhausted workspace credits; it did not
-determine the installer action was unsafe. Later repository relocation and network checks succeeded.
-The official Inno 7.1.0 x64 installer was downloaded, checksum recorded, signature valid (Pyrsys B.V.);
-compiler setup was not completed at that interruption. CI bootstrap verifies the fixed SHA-256.
+The repository was originally created by the sandbox account. When using the host account, use a
+process-scoped Git safe.directory for C:/devl/repositories/sound-anchor if necessary; never wildcard
+global trust. The generated task's sandbox does not automatically grant writes to C:\devl, so use
+the authorized filesystem approval mechanism or open this repository as a Codex project.
+
+Useful commands: `scripts/Test.ps1`, `scripts/Build-Packages.ps1 -InnoCompiler .tools/inno/ISCC.exe`.
+UI tests require an interactive desktop. Installer tests refuse existing installations and require
+an explicit local switch; prefer disposable CI. No real enforcing app was left running or registered
+to start at sign-in by development tests.
