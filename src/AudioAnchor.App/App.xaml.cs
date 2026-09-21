@@ -36,6 +36,7 @@ public partial class App : Application
                 return;
             }
             if (e.Args.Contains("--exit")) { Shutdown(); return; }
+            if (!demo) LegacyMigration.Run(dataDirectory);
             Directory.CreateDirectory(dataDirectory);
             var window = new MainWindow(demo, dataDirectory);
             MainWindow = window;
