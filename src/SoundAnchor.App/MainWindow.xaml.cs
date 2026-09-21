@@ -1,5 +1,6 @@
 using System.ComponentModel;
 using System.Diagnostics;
+using System.Reflection;
 using System.Text.Json;
 using System.Windows;
 using System.Windows.Controls;
@@ -20,9 +21,11 @@ public partial class MainWindow : Window
     private readonly EnforcementWorker _worker;
     private readonly Forms.NotifyIcon _tray;
     private readonly Forms.ToolStripMenuItem _pauseMenu;
+    private readonly GitHubReleaseSource? _updateSource;
     private bool _exiting;
     private bool _choicesInitialized;
     private string? _lastError;
+    private string? _updateUrl;
     private IReadOnlyList<AudioDevice> _devices = [];
     private sealed record Choice(string? Id, string Name, string Display) { public override string ToString() => Display; }
 
@@ -55,6 +58,35 @@ public partial class MainWindow : Window
         UpdatePause();
         _worker.Request();
         SystemEvents.PowerModeChanged += PowerChanged;
+        // Demo mode stays offline and network-free, matching its isolation promise; UI tests run in demo mode.
+        if (!demo)
+        {
+            _updateSource = new("rm968211", "sound-anchor");
+            _ = CheckForUpdateAsync();
+        }
+    }
+
+    private static readonly Version CurrentVersion = ReadCurrentVersion();
+    private static Version ReadCurrentVersion()
+    {
+        var informational = typeof(App).Assembly.GetCustomAttribute<AssemblyInformationalVersionAttribute>()?.InformationalVersion;
+        var numeric = informational?.Split('+')[0];
+        return numeric is not null && Version.TryParse(numeric, out var version) ? version : new Version(0, 0, 0);
+    }
+    private async Task CheckForUpdateAsync()
+    {
+        using var timeout = new CancellationTokenSource(TimeSpan.FromSeconds(5));
+        var release = await UpdateChecker.CheckAsync(_updateSource!, CurrentVersion, timeout.Token);
+        if (release is null || _exiting) return;
+        _updateUrl = release.Url;
+        UpdateBannerText.Text = $"SoundAnchor {release.Version} is available — you have {CurrentVersion}.";
+        UpdateBanner.Visibility = Visibility.Visible;
+    }
+    private void UpdateBannerClicked(object sender, RoutedEventArgs e)
+    {
+        if (_updateUrl is null) return;
+        try { Process.Start(new ProcessStartInfo(_updateUrl) { UseShellExecute = true })?.Dispose(); }
+        catch (Exception ex) { ShowError(ex); }
     }
 
     private void RefreshChoices(bool initial)
@@ -102,7 +134,6 @@ public partial class MainWindow : Window
         PauseButton.Content = _settings.Paused ? "Resume" : "Pause";
         _pauseMenu.Text = _settings.Paused ? "Resume protection" : "Pause protection";
     }
-    private void RestoreClicked(object sender, RoutedEventArgs e) => _worker.Refresh();
     private void SoundControlPanelClicked(object sender, RoutedEventArgs e)
     {
         // The classic Sound control panel still owns per-role defaults, so open that rather than Settings.
@@ -168,6 +199,7 @@ public partial class MainWindow : Window
         _worker.Updated -= OnUpdated;
         await _worker.DisposeAsync();
         _backend.Dispose();
+        _updateSource?.Dispose();
         _tray.Visible = false;
         _tray.ContextMenuStrip?.Dispose();
         _tray.Dispose();
