@@ -1,6 +1,6 @@
 <Project>
   <!-- Developers MUST choose and increase MAJOR.MINOR.PATCH in every PR to master. -->
   <PropertyGroup>
-    <Version>2.0.2</Version>
+    <Version>2.1.0</Version>
   </PropertyGroup>
 </Project>

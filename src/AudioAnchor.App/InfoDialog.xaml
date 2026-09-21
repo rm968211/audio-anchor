@@ -1,0 +1,8 @@
+<Window x:Class="AudioAnchor.App.InfoDialog" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" Title="AudioAnchor" Icon="Assets/icon.ico" Width="340" SizeToContent="Height" ResizeMode="NoResize" WindowStartupLocation="CenterScreen" FontFamily="Segoe UI" FontSize="14" ShowInTaskbar="False" Background="{DynamicResource SolidBackgroundFillColorBaseBrush}" AutomationProperties.AutomationId="InfoDialog">
+  <!-- Themed stand-in for MessageBox: the native Win32 dialog doesn't follow WPF's ThemeMode and
+       always renders in the system's light chrome, which clashes with the rest of the app. -->
+  <StackPanel Margin="26,24">
+    <TextBlock x:Name="MessageText" TextWrapping="Wrap" TextAlignment="Center" Margin="0,0,0,20" AutomationProperties.AutomationId="InfoDialogMessage"/>
+    <Button Content="OK" Padding="20,8" MinHeight="34" HorizontalAlignment="Center" Click="OkClicked" IsDefault="True" IsCancel="True" AutomationProperties.AutomationId="InfoDialogOkButton"/>
+  </StackPanel>
+</Window>
