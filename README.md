@@ -9,13 +9,12 @@
 
 Tired of Windows automatically changing your default audio devices when something is plugged in? AudioAnchor is a simple Windows tray app that restores your preferred speakers and microphones whenever Windows changes the default audio devices.
 
-<p align="center">
-  <img width="440" alt="AudioAnchor's settings window, showing protected playback and recording devices" src="assets/screenshot-app.png">
-</p>
-
-<p align="center">
-  <img width="300" alt="AudioAnchor running quietly in the system tray" src="assets/screenshot-tray.png">
-</p>
+<table align="center">
+  <tr>
+    <td align="center" valign="middle"><img width="380" alt="AudioAnchor's settings window, showing protected playback and recording devices" src="assets/screenshot-app.png"></td>
+    <td align="center" valign="middle"><img width="260" alt="AudioAnchor running quietly in the system tray" src="assets/screenshot-tray.png"></td>
+  </tr>
+</table>
 
 ## Installation
 
