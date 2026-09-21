@@ -1,0 +1,9 @@
+<Application x:Class="AudioAnchor.App.App" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" ShutdownMode="OnExplicitShutdown" ThemeMode="Dark">
+  <!-- ThemeMode applies the Fluent dark theme to every control and to the window title bar, and
+       follows the user's Windows accent colour. Only untemplated resources belong here: an implicit
+       or explicit style without a template replaces the Fluent control style and drops the control
+       back to the light classic chrome. -->
+  <Application.Resources>
+    <Style TargetType="TextBlock"><Setter Property="TextWrapping" Value="Wrap"/></Style>
+  </Application.Resources>
+</Application>

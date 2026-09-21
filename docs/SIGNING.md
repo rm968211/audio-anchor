@@ -1,7 +1,7 @@
 # Code signing and the "unknown publisher" warning
 
 Windows shows **"Publisher: Unknown"** in the installer's UAC prompt, and SmartScreen shows
-"Windows protected your PC", because `SoundAnchor-<version>-win-x64-Setup.exe` carries no
+"Windows protected your PC", because `AudioAnchor-<version>-win-x64-Setup.exe` carries no
 Authenticode signature. Nothing in the app causes it; an unsigned binary always gets that warning.
 Publishing checksums (`SHA256SUMS.txt`) proves integrity but does not remove the prompt — only a
 certificate from a CA in the Windows Trusted Root program does.
@@ -27,7 +27,7 @@ downloads of a newly issued OV certificate until enough installs accumulate.
 
 ## Enabling signing in this repository
 
-Packaging signs `SoundAnchor.exe`, the setup and the uninstaller when it is given a signing command.
+Packaging signs `AudioAnchor.exe`, the setup and the uninstaller when it is given a signing command.
 Nothing changes for unsigned builds.
 
 ```powershell
@@ -52,7 +52,7 @@ Never commit a certificate, token PIN, or signing credential to this repository.
 ## Verifying a signed build
 
 ```powershell
-Get-AuthenticodeSignature .\artifacts\packages\SoundAnchor-<version>-win-x64-Setup.exe |
+Get-AuthenticodeSignature .\artifacts\packages\AudioAnchor-<version>-win-x64-Setup.exe |
   Format-List Status, SignerCertificate, TimeStamperCertificate
 ```
 

@@ -33,13 +33,13 @@ try {
         Remove-Item -LiteralPath $resolved -Recurse -Force
     }
     New-Item -ItemType Directory -Force -Path $packages | Out-Null
-    dotnet publish src/SoundAnchor.App -c Release -r win-x64 --self-contained true -p:DebugType=None -o $publish
+    dotnet publish src/AudioAnchor.App -c Release -r win-x64 --self-contained true -p:DebugType=None -o $publish
     if ($LASTEXITCODE) { throw 'Publish failed' }
     Copy-Item -LiteralPath (Join-Path $repo 'README.md') -Destination $publish
     if ($SignToolCommand) {
-        Invoke-SignTool -Command $SignToolCommand -Path (Join-Path $publish 'SoundAnchor.exe')
+        Invoke-SignTool -Command $SignToolCommand -Path (Join-Path $publish 'AudioAnchor.exe')
     }
-    Compress-Archive -Path "$publish/*" -DestinationPath (Join-Path $packages "SoundAnchor-$Version-win-x64-Portable.zip") -Force
+    Compress-Archive -Path "$publish/*" -DestinationPath (Join-Path $packages "AudioAnchor-$Version-win-x64-Portable.zip") -Force
     if (-not $InnoCompiler) {
         $candidates = @("${env:ProgramFiles(x86)}\Inno Setup 6\ISCC.exe", "${env:ProgramFiles}\Inno Setup 7\ISCC.exe", "${env:ProgramFiles(x86)}\Inno Setup 7\ISCC.exe")
         $InnoCompiler = $candidates | Where-Object { Test-Path -LiteralPath $_ } | Select-Object -First 1
@@ -47,10 +47,10 @@ try {
     if (-not $InnoCompiler) { throw 'Install Inno Setup or specify -InnoCompiler' }
     $innoArguments = @("/DAppVersion=$Version", "/DPublishDir=$publish")
     # Inno signs the setup and the uninstaller itself through a named sign tool.
-    if ($SignToolCommand) { $innoArguments += @('/DSignToolName=soundanchor', "/Ssoundanchor=$SignToolCommand") }
-    & $InnoCompiler @innoArguments installer/SoundAnchor.iss
+    if ($SignToolCommand) { $innoArguments += @('/DSignToolName=audioanchor', "/Saudioanchor=$SignToolCommand") }
+    & $InnoCompiler @innoArguments installer/AudioAnchor.iss
     if ($LASTEXITCODE) { throw 'Installer compilation failed' }
-    Get-ChildItem -LiteralPath $packages -File | Where-Object { $_.Name -like "SoundAnchor-$Version-*" } | Sort-Object Name | ForEach-Object {
+    Get-ChildItem -LiteralPath $packages -File | Where-Object { $_.Name -like "AudioAnchor-$Version-*" } | Sort-Object Name | ForEach-Object {
         $hash = (Get-FileHash -LiteralPath $_.FullName -Algorithm SHA256).Hash.ToLowerInvariant()
         "$hash  $($_.Name)"
     } | Set-Content -LiteralPath (Join-Path $packages 'SHA256SUMS.txt') -Encoding utf8

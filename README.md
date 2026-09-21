@@ -1,17 +1,17 @@
-<p align="center"><img src="assets/logo.png" width="160" alt="SoundAnchor logo"></p>
+<p align="center"><img src="assets/logo.png" width="160" alt="AudioAnchor logo"></p>
 
-# SoundAnchor
+# AudioAnchor
 
-Tired of Windows automatically changing your default audio devices when something is plugged in? SoundAnchor is a simple Windows tray app that restores your preferred speakers and microphones whenever Windows changes the default audio devices.
+Tired of Windows automatically changing your default audio devices when something is plugged in? AudioAnchor is a simple Windows tray app that restores your preferred speakers and microphones whenever Windows changes the default audio devices.
 
 <p align="center">
-  <img width="440" alt="SoundAnchor's settings window, showing protected playback and recording devices" src="https://github.com/user-attachments/assets/6d214017-f9c1-4df6-8c4f-0eafbb07c23a">
+  <img width="440" alt="AudioAnchor's settings window, showing protected playback and recording devices" src="https://github.com/user-attachments/assets/6d214017-f9c1-4df6-8c4f-0eafbb07c23a">
 </p>
 
 ## Installation
 
-1. Navigate to the [releases page](https://github.com/rm968211/sound-anchor/releases) and locate the latest version.
-2. Download and run the `win-x64-Setup.exe` file. For those that prefer a portable version, download the portable `.zip`, extract, and run `SoundAnchor.exe`.
+1. Navigate to the [releases page](https://github.com/rm968211/audio-anchor/releases) and locate the latest version.
+2. Download and run the `win-x64-Setup.exe` file. For those that prefer a portable version, download the portable `.zip`, extract, and run `AudioAnchor.exe`.
 
    <p align="center">
      <img width="720" alt="The GitHub releases page, with the win-x64-Setup.exe asset highlighted" src="https://github.com/user-attachments/assets/d31bd10c-49b7-4e66-929f-cf026ce71213">
@@ -37,7 +37,7 @@ Packages go to `artifacts/packages`.
 For a safe interactive preview:
 
 ```powershell
-dotnet run --project src/SoundAnchor.App -- --demo
+dotnet run --project src/AudioAnchor.App -- --demo
 ```
 
 Demo mode uses simulated devices and separate preferences; it cannot change real audio defaults or

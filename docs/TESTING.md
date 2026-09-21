@@ -1,4 +1,4 @@
-# Testing SoundAnchor
+# Testing AudioAnchor
 
 ## Automated layers
 
@@ -24,11 +24,11 @@ Do not interpret simulated tests as proof that physical hardware or sleep/resume
 Run the built application with `--diagnose <absolute-output.json>` for read-only enumeration and
 notification registration. It reports all endpoints and all six defaults without changing them.
 
-`dotnet run --project tests/SoundAnchor.HardwareProbe -- --verify-current` reasserts each existing
+`dotnet run --project tests/AudioAnchor.HardwareProbe -- --verify-current` reasserts each existing
 default to itself and verifies the native setter ABI without selecting different devices.
 
-`dotnet run --project tests/SoundAnchor.HardwareProbe -- --exercise-switching` is an **opt-in test that
-temporarily changes real defaults**. Close SoundAnchor and other enforcing utilities first. It takes a
+`dotnet run --project tests/AudioAnchor.HardwareProbe -- --exercise-switching` is an **opt-in test that
+temporarily changes real defaults**. Close AudioAnchor and other enforcing utilities first. It takes a
 snapshot, changes each testable role to an alternative active device, lets the worker restore the
 original, and restores the snapshot in a finally block. Requires at least two active endpoints per
 tested direction. A missing direction is reported as untested, not passed. Do not disconnect hardware

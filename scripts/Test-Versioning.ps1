@@ -21,7 +21,7 @@ Check 'Reject missing manifest version' { Fails { Read-VersionXml '<Project />' 
 Check 'Reject malformed XML' { Fails { Read-VersionXml '<Project>' } }
 Check 'Reject DTD/entities' { Fails { Read-VersionXml '<!DOCTYPE Project [<!ENTITY v "1.0.0">]><Project><PropertyGroup><Version>&v;</Version></PropertyGroup></Project>' } }
 
-$fixture = Join-Path ([IO.Path]::GetTempPath()) ('SoundAnchor-VersionTests-' + [guid]::NewGuid().ToString('N'))
+$fixture = Join-Path ([IO.Path]::GetTempPath()) ('AudioAnchor-VersionTests-' + [guid]::NewGuid().ToString('N'))
 New-Item -ItemType Directory -Path $fixture | Out-Null
 try {
     git -C $fixture init --quiet
@@ -46,7 +46,7 @@ try {
 } finally {
     $resolved = [IO.Path]::GetFullPath($fixture)
     $tempRoot = [IO.Path]::GetFullPath([IO.Path]::GetTempPath())
-    if (-not $resolved.StartsWith($tempRoot, [StringComparison]::OrdinalIgnoreCase) -or (Split-Path $resolved -Leaf) -notlike 'SoundAnchor-VersionTests-*') { throw 'Unexpected fixture cleanup path' }
+    if (-not $resolved.StartsWith($tempRoot, [StringComparison]::OrdinalIgnoreCase) -or (Split-Path $resolved -Leaf) -notlike 'AudioAnchor-VersionTests-*') { throw 'Unexpected fixture cleanup path' }
     Remove-Item -LiteralPath $resolved -Recurse -Force
 }
 Write-Host "Versioning tests passed: $script:passed"
