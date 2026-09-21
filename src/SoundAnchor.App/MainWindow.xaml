@@ -17,10 +17,10 @@
             <Button DockPanel.Dock="Right" Content="View release" Padding="12,6" MinHeight="30" AutomationProperties.AutomationId="UpdateBannerButton" Click="UpdateBannerClicked"/>
           </DockPanel>
         </Border>
-        <Border CornerRadius="8" Padding="16,13" Margin="0,0,0,14" Background="{DynamicResource CardBackgroundFillColorDefaultBrush}" BorderBrush="{DynamicResource CardStrokeColorDefaultBrush}" BorderThickness="1">
+        <Border x:Name="StatusCard" CornerRadius="8" Padding="16,13" Margin="0,0,0,14" Background="{DynamicResource CardBackgroundFillColorDefaultBrush}" BorderBrush="{DynamicResource CardStrokeColorDefaultBrush}" BorderThickness="1">
           <StackPanel>
             <TextBlock x:Name="StatusText" FontWeight="SemiBold" AutomationProperties.AutomationId="StatusText"/>
-            <TextBlock x:Name="WarningText" Foreground="#E0A458" Margin="0,5,0,0"/>
+            <TextBlock x:Name="WarningText" Foreground="#E0A458" Margin="0,5,0,0" Visibility="Collapsed"/>
           </StackPanel>
         </Border>
         <Border CornerRadius="8" Padding="18,16" Background="{DynamicResource CardBackgroundFillColorDefaultBrush}" BorderBrush="{DynamicResource CardStrokeColorDefaultBrush}" BorderThickness="1">

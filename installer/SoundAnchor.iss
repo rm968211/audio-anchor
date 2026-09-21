@@ -41,7 +41,7 @@ SignedUninstaller=yes
 #endif
 
 [Tasks]
-Name: "startup"; Description: "Start SoundAnchor when I sign in"; Flags: unchecked
+Name: "startup"; Description: "Start SoundAnchor when I sign into Windows"; Flags: unchecked
 
 [Files]
 Source: "{#PublishDir}\*"; DestDir: "{app}"; Flags: ignoreversion recursesubdirs createallsubdirs

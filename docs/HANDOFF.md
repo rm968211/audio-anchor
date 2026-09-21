@@ -1,4 +1,35 @@
-# Latest change: applied the user's SoundAnchor logo everywhere
+# Latest change: 1.0 — status card fix, installer wording, protection color
+
+Follow-up to the logo PR, added to the same branch before merge. This release (0.5.0 to **1.0.0**,
+the user's explicit choice — not a semver-meaning bump, just the version they asked for):
+
+- **Fixed a layout bug.** `WarningText` (the small line under the main status message — used for
+  the demo-mode notice, startup-read errors, and device-enumeration errors) always reserved a
+  blank line's height even when empty, because an empty `TextBlock` still occupies its line box.
+  The user saw this as dead space in a plain, no-warning install. Fixed with a `SetWarning(string?)`
+  helper that sets `Visibility.Collapsed` when there's nothing to show, replacing the three call
+  sites that used to write `WarningText.Text` directly.
+- **Status card color.** The status card's background now tints to match its own message, using
+  the exact same precedence `EnforcementReport.Summary` already uses (error → red, paused/waiting →
+  amber, protected → green, nothing configured → the default neutral card). Colors are static,
+  frozen `SolidColorBrush`es chosen independent of the Fluent accent color, so the signal reads the
+  same regardless of the user's Windows accent.
+- **Installer wording.** The startup task's checkbox description changed from "Start SoundAnchor
+  when I sign in" to "Start SoundAnchor when I sign into Windows," per the user's request. Only the
+  installer task changed; the in-app checkbox (`MainWindow.xaml`'s `StartupCheck`) still reads
+  "Start SoundAnchor when I sign in" — not asked to be changed.
+
+Verified on 2026-09-21 with .NET SDK 10.0.401 on Windows 11: clean Release build with zero
+warnings, all 35 unit/integration tests and the FlaUI desktop scenario pass. Screenshotted three
+states: demo-mode protected (green card, demo notice still shows normally), a genuine no-warning
+state using the real non-demo backend with an isolated empty data directory (confirmed the card now
+hugs a single line of text — this is the exact bug reported, verified fixed; safe to run non-demo
+here since first-run has no preferences, so the policy engine only reads current defaults and never
+writes any), and demo-mode paused (amber card). Did not screenshot the error-red state (would need
+a forced audio failure) or rebuild+reverify the installer wizard banners from the prior PR (unrelated
+to this change, not touched).
+
+# Previous change: applied the user's SoundAnchor logo everywhere
 
 The user supplied `soundanchor logo.png`/`.ico` (a blue anchor with a sound waveform through the
 shank) from their desktop and asked for it applied everywhere appropriate. This release (0.4.0 to
