@@ -31,6 +31,17 @@ additive UI, no behaviour change to enforcement):
 - Neither new window sets `Owner`: `App.xaml.cs` only calls `ShowSettings()` on startup when not
   launched with `--background`, so `MainWindow` may not have a window handle yet when a tray click
   fires, and WPF requires an owner to already have one.
+- **Follow-up after the user looked at the actual running app on their own machine:** the 64x64
+  `icon.ico` frame still looked "extremely blurry" for real, even though my own screenshot looked
+  fine. This environment's display reports 100% DPI scaling, so it couldn't reproduce the bug, but
+  the mechanism is real regardless: WPF re-rasterizes a fixed-size decoded ico frame to physical
+  pixels at whatever the actual DPI scale factor is, and any scale other than exactly 100% blurs a
+  frame that was already "exactly" the requested logical size. Fixed by embedding `assets/logo.png`
+  (1254x1254) as a second `Resource` in the csproj and using that instead of `icon.ico` for this
+  one on-screen `Image`, with `RenderOptions.BitmapScalingMode="HighQuality"`: downscaling from a
+  source far larger than any plausible display size stays crisp under any DPI factor, so there's no
+  "pick the right frame" problem to get wrong. `icon.ico` is unchanged for the exe/taskbar/title-bar
+  icon and the tray icon, where multi-resolution ico selection is exactly the right tool.
 
 Verified with .NET SDK 10.0.401 on Windows 11: clean Release build, zero warnings, all 39
 unit/integration tests and the FlaUI desktop scenario pass (both new windows are demo-mode-safe

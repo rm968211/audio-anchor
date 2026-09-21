@@ -2,8 +2,9 @@
   <!-- An explicit opaque Background disables Fluent's default translucent Mica backdrop, which
        otherwise shows the desktop wallpaper's color through a small window's generous margins. -->
   <StackPanel Margin="28,26">
-    <!-- 64x64 matches one of icon.ico's embedded frames exactly; other sizes force a blurry rescale. -->
-    <Image Source="Assets/icon.ico" Width="64" Height="64" HorizontalAlignment="Center" Margin="0,0,0,14"/>
+    <!-- The 1254x1254 PNG downscaled, not icon.ico: picking one small embedded ico frame (e.g. 64x64)
+         still looks blurry once Windows DPI scaling rescales it again to physical pixels. -->
+    <Image Source="Assets/logo.png" Width="64" Height="64" HorizontalAlignment="Center" Margin="0,0,0,14" RenderOptions.BitmapScalingMode="HighQuality"/>
     <TextBlock Text="AudioAnchor" FontSize="20" FontWeight="SemiBold" HorizontalAlignment="Center"/>
     <TextBlock x:Name="VersionText" FontSize="13" HorizontalAlignment="Center" Margin="0,2,0,14" Foreground="{DynamicResource TextFillColorSecondaryBrush}" AutomationProperties.AutomationId="AboutVersionText"/>
     <TextBlock Text="Keep your sound where it belongs." HorizontalAlignment="Center" TextAlignment="Center" TextWrapping="Wrap" Foreground="{DynamicResource TextFillColorSecondaryBrush}" Margin="0,0,0,16"/>
