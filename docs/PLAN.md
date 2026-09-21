@@ -1,3 +1,7 @@
+# Current release-policy amendment
+
+The user subsequently required a public repository, master as the default branch, a mandatory developer-selected version.props increase on every PR, and automatic published GitHub releases after merged PRs pass tests. docs/VERSIONING.md governs releases and supersedes the original private/draft/tag-only plan below.
+
 # SoundAnchor — approved implementation plan
 
 ## Purpose and scope

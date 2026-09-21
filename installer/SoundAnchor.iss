@@ -1,5 +1,5 @@
 #ifndef AppVersion
-  #define AppVersion "0.1.0"
+  #error "AppVersion must come from version.props via scripts/Build-Packages.ps1"
 #endif
 #ifndef PublishDir
   #define PublishDir "..\artifacts\publish"

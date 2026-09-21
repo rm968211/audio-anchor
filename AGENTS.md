@@ -1,7 +1,7 @@
 # SoundAnchor agent handoff
 
 Read `docs/PLAN.md` before changing scope and `docs/HANDOFF.md` before continuing work.
-The user approved implementation, a new private GitHub repository under their authenticated account,
+The user approved implementation, a new GitHub repository under their authenticated account,
 Windows installers with uninstall, GitHub Actions artifacts, and a full test automation suite.
 
 - Build a Windows 11 x64, .NET 10 WPF tray application. Keep all six audio roles correct.
@@ -15,6 +15,8 @@ Windows installers with uninstall, GitHub Actions artifacts, and a full test aut
 - Keep source, documentation, and automation in this repository. Never commit credentials or build outputs.
 - Update HANDOFF with completed work, exact verification results, remaining gaps, and next steps.
 - Do not claim physical USB/Bluetooth, sleep, or audio-service recovery is tested based on simulations.
-- Keep published releases in draft until they are ready for review. Initial binaries are unsigned.
+- Every PR to master MUST increase version.props. The developer chooses major, minor, or patch.
+- Merged PRs publish a GitHub release automatically after passing validation/tests. Initial binaries are unsigned.
+- The repository is public at the user's explicit request. See docs/VERSIONING.md.
 
 See `docs/TESTING.md` for commands and hardware checks.
