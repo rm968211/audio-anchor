@@ -28,6 +28,12 @@ CloseApplicationsFilter=SoundAnchor.exe
 RestartApplications=no
 VersionInfoVersion={#AppVersion}.0
 SetupLogging=yes
+; Build-Packages.ps1 defines SignToolName only when a signing command is supplied, so unsigned
+; builds keep working without an Authenticode certificate.
+#ifdef SignToolName
+SignTool={#SignToolName}
+SignedUninstaller=yes
+#endif
 
 [Tasks]
 Name: "startup"; Description: "Start SoundAnchor when I sign in"; Flags: unchecked

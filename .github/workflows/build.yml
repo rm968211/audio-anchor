@@ -54,7 +54,14 @@ jobs:
       - name: Install verified Inno compiler
         run: ./scripts/Install-InnoCompiler.ps1
       - name: Build portable and installer packages
-        run: ./scripts/Build-Packages.ps1 -InnoCompiler .tools/inno/ISCC.exe
+        env:
+          # Optional: an Authenticode command line containing the $f placeholder. Configured
+          # repositories sign the app, installer and uninstaller; without it builds stay unsigned.
+          SIGNTOOL_COMMAND: ${{ secrets.SIGNTOOL_COMMAND }}
+        run: |
+          $packaging = @{ InnoCompiler = '.tools/inno/ISCC.exe' }
+          if ($env:SIGNTOOL_COMMAND) { $packaging.SignToolCommand = $env:SIGNTOOL_COMMAND }
+          ./scripts/Build-Packages.ps1 @packaging
       - name: Installer lifecycle test
         run: |
           $installer = Get-ChildItem artifacts/packages/*-Setup.exe | Select-Object -First 1

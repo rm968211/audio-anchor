@@ -1,4 +1,5 @@
 using System.ComponentModel;
+using System.Diagnostics;
 using System.Text.Json;
 using System.Windows;
 using System.Windows.Controls;
@@ -102,6 +103,12 @@ public partial class MainWindow : Window
         _pauseMenu.Text = _settings.Paused ? "Resume protection" : "Pause protection";
     }
     private void RestoreClicked(object sender, RoutedEventArgs e) => _worker.Refresh();
+    private void SoundControlPanelClicked(object sender, RoutedEventArgs e)
+    {
+        // The classic Sound control panel still owns per-role defaults, so open that rather than Settings.
+        try { Process.Start(new ProcessStartInfo("control.exe", "mmsys.cpl,,0") { UseShellExecute = true })?.Dispose(); }
+        catch (Exception ex) { ShowError(ex); }
+    }
     private void SimulateClicked(object sender, RoutedEventArgs e) => ((SimulatedAudioBackend)_backend).SimulateSwitch();
     private void StartupChanged(object sender, RoutedEventArgs e)
     {
@@ -116,11 +123,19 @@ public partial class MainWindow : Window
         StatusText.Text = report.Summary;
         _tray.Text = _settings.Paused ? "SoundAnchor — paused" : report.HasErrors ? "SoundAnchor — needs attention" : "SoundAnchor — protecting audio";
         RefreshChoices(false);
-        string Name(string? id) => id is null ? "None" : _devices.FirstOrDefault(d => d.Id == id)?.Name ?? "Unavailable device";
+        string Name(string? id) => id is null ? "no device" : _devices.FirstOrDefault(d => d.Id == id)?.Name ?? "a device that is no longer available";
         void Status(TextBlock target, AudioFlow flow, params AudioRole[] roles)
         {
-            var slots = report.Slots.Where(s => s.Slot.Flow == flow && roles.Contains(s.Slot.Role)).ToArray();
-            target.Text = string.Join(" · ", slots.Select(s => $"{s.Slot.Role}: {Name(s.CurrentId)} ({s.State}){(s.Error is null ? "" : " — " + s.Error)}"));
+            // Console and Multimedia share one selection, so describe the slot that needs attention most.
+            var slot = report.Slots.Where(s => s.Slot.Flow == flow && roles.Contains(s.Slot.Role)).OrderByDescending(s => Attention(s.State)).FirstOrDefault();
+            target.Text = slot is null ? "" : slot.State switch
+            {
+                SlotState.Error => $"Windows would not accept this choice — {slot.Error}",
+                SlotState.Unmanaged => $"Not protected. Windows is using {Name(slot.CurrentId)} and may change it at any time.",
+                SlotState.Paused => $"Protection paused. Windows is using {Name(slot.CurrentId)}.",
+                SlotState.Waiting => $"Not connected right now, so Windows is using {Name(slot.CurrentId)}. SoundAnchor switches back as soon as it returns.",
+                _ => "In use now. SoundAnchor puts it back if Windows changes it.",
+            };
         }
         Status(PlaybackStatus, AudioFlow.Playback, AudioRole.Console, AudioRole.Multimedia);
         Status(CallPlaybackStatus, AudioFlow.Playback, AudioRole.Communications);
@@ -130,6 +145,7 @@ public partial class MainWindow : Window
         _lastError = report.HasErrors ? report.Summary : null;
         if (_demo) File.WriteAllText(Path.Combine(_dataDirectory, "demo-status.json"), JsonSerializer.Serialize(report));
     });
+    private static int Attention(SlotState state) => state switch { SlotState.Error => 4, SlotState.Waiting => 3, SlotState.Paused => 2, SlotState.Unmanaged => 1, _ => 0 };
     private void Log(string message)
     {
         try
