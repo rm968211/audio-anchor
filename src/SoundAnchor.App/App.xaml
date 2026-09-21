@@ -1,8 +1,9 @@
-<Application x:Class="SoundAnchor.App.App" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" ShutdownMode="OnExplicitShutdown">
+<Application x:Class="SoundAnchor.App.App" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" ShutdownMode="OnExplicitShutdown" ThemeMode="Dark">
+  <!-- ThemeMode applies the Fluent dark theme to every control and to the window title bar, and
+       follows the user's Windows accent colour. Only untemplated resources belong here: an implicit
+       or explicit style without a template replaces the Fluent control style and drops the control
+       back to the light classic chrome. -->
   <Application.Resources>
-    <Style TargetType="Window"><Setter Property="FontFamily" Value="Segoe UI"/><Setter Property="FontSize" Value="14"/><Setter Property="Background" Value="#F5F6F3"/><Setter Property="Foreground" Value="#182C29"/></Style>
-    <Style TargetType="Button"><Setter Property="Padding" Value="16,9"/><Setter Property="Margin" Value="0,0,8,0"/><Setter Property="MinHeight" Value="38"/><Setter Property="Background" Value="#E6EBE6"/><Setter Property="BorderBrush" Value="#BAC9C0"/></Style>
-    <Style TargetType="ComboBox"><Setter Property="MinHeight" Value="34"/><Setter Property="Padding" Value="8,5"/><Setter Property="Margin" Value="0,6,0,5"/></Style>
     <Style TargetType="TextBlock"><Setter Property="TextWrapping" Value="Wrap"/></Style>
   </Application.Resources>
 </Application>

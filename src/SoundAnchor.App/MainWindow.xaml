@@ -1,39 +1,46 @@
-<Window x:Class="SoundAnchor.App.MainWindow" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" Title="SoundAnchor" Width="740" Height="860" MinWidth="620" MinHeight="700" WindowStartupLocation="CenterScreen" AutomationProperties.AutomationId="SettingsWindow">
-  <ScrollViewer VerticalScrollBarVisibility="Auto">
-    <StackPanel Margin="30,24">
-      <TextBlock Text="SOUNDANCHOR" FontSize="12" FontWeight="Bold" Foreground="#336B5B"/>
-      <TextBlock Text="Keep your sound where it belongs." FontSize="28" FontWeight="SemiBold" Margin="0,7,0,8"/>
-      <TextBlock Text="Choose your preferred devices. SoundAnchor restores them whenever Windows changes the defaults." Foreground="#526660" Margin="0,0,0,18"/>
-      <Border Background="#E1EDE6" CornerRadius="8" Padding="16" Margin="0,0,0,18">
-        <StackPanel><TextBlock x:Name="StatusText" FontWeight="SemiBold" AutomationProperties.AutomationId="StatusText"/><TextBlock x:Name="WarningText" Foreground="#865326" Margin="0,5,0,0"/></StackPanel>
-      </Border>
-      <Border Background="White" CornerRadius="8" Padding="18" BorderBrush="#DEE4DE" BorderThickness="1">
-        <StackPanel>
-          <TextBlock Text="PLAYBACK" FontSize="11" FontWeight="Bold" Foreground="#527168"/>
-          <Label Content="Speakers or headphones" Target="{Binding ElementName=PlaybackChoice}" Padding="0" Margin="0,8,0,0"/>
-          <ComboBox x:Name="PlaybackChoice" AutomationProperties.AutomationId="PlaybackChoice"/>
-          <TextBlock x:Name="PlaybackStatus" FontSize="12" Foreground="#62736E"/>
-          <Label Content="Speakers or headphones for calls" Target="{Binding ElementName=CallPlaybackChoice}" Padding="0" Margin="0,14,0,0"/>
-          <ComboBox x:Name="CallPlaybackChoice" AutomationProperties.AutomationId="CallPlaybackChoice"/>
-          <TextBlock x:Name="CallPlaybackStatus" FontSize="12" Foreground="#62736E"/>
-          <Separator Margin="0,18,0,16" Background="#E0E6E1"/>
-          <TextBlock Text="RECORDING" FontSize="11" FontWeight="Bold" Foreground="#527168"/>
-          <Label Content="Microphone" Target="{Binding ElementName=RecordingChoice}" Padding="0" Margin="0,8,0,0"/>
-          <ComboBox x:Name="RecordingChoice" AutomationProperties.AutomationId="RecordingChoice"/>
-          <TextBlock x:Name="RecordingStatus" FontSize="12" Foreground="#62736E"/>
-          <Label Content="Microphone for calls" Target="{Binding ElementName=CallRecordingChoice}" Padding="0" Margin="0,14,0,0"/>
-          <ComboBox x:Name="CallRecordingChoice" AutomationProperties.AutomationId="CallRecordingChoice"/>
-          <TextBlock x:Name="CallRecordingStatus" FontSize="12" Foreground="#62736E"/>
-        </StackPanel>
-      </Border>
-      <CheckBox x:Name="StartupCheck" Content="Start SoundAnchor when I sign in" Margin="0,18,0,14" AutomationProperties.AutomationId="StartupCheck" Click="StartupChanged"/>
-      <WrapPanel>
-        <Button Content="Save and apply" Background="#28624F" Foreground="White" BorderBrush="#28624F" AutomationProperties.AutomationId="ApplyButton" Click="ApplyClicked"/>
-        <Button x:Name="PauseButton" Content="Pause" AutomationProperties.AutomationId="PauseButton" Click="PauseClicked"/>
-        <Button Content="Restore now" AutomationProperties.AutomationId="RestoreButton" Click="RestoreClicked"/>
-      </WrapPanel>
-      <TextBlock Text="Closing this window keeps protection running in the tray. To change devices through Windows, pause protection first." FontSize="12" Foreground="#62736E" Margin="0,16,0,8"/>
-      <Button x:Name="SimulateButton" Content="Simulate Windows switching devices" HorizontalAlignment="Left" AutomationProperties.AutomationId="SimulateButton" Click="SimulateClicked" Visibility="Collapsed"/>
-    </StackPanel>
-  </ScrollViewer>
+<Window x:Class="SoundAnchor.App.MainWindow" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" Title="SoundAnchor" Width="720" Height="840" MinWidth="620" MinHeight="620" WindowStartupLocation="CenterScreen" FontFamily="Segoe UI" FontSize="14" AutomationProperties.AutomationId="SettingsWindow">
+  <DockPanel>
+    <Border DockPanel.Dock="Bottom" Background="{DynamicResource CardBackgroundFillColorDefaultBrush}" BorderBrush="{DynamicResource CardStrokeColorDefaultBrush}" BorderThickness="0,1,0,0" Padding="30,14">
+      <DockPanel LastChildFill="False">
+        <Button DockPanel.Dock="Right" Content="Sound control panel" Padding="16,9" MinHeight="38" VerticalAlignment="Center" ToolTip="Opens the Windows Sound control panel. Pause protection first if you want a change there to stick." AutomationProperties.AutomationId="SoundControlPanelButton" Click="SoundControlPanelClicked"/>
+        <Button Content="Save and apply" Padding="16,9" Margin="0,0,8,0" MinHeight="38" Style="{DynamicResource AccentButtonStyle}" AutomationProperties.AutomationId="ApplyButton" Click="ApplyClicked"/>
+        <Button x:Name="PauseButton" Content="Pause" Padding="16,9" Margin="0,0,8,0" MinHeight="38" AutomationProperties.AutomationId="PauseButton" Click="PauseClicked"/>
+        <Button Content="Restore now" Padding="16,9" Margin="0,0,8,0" MinHeight="38" AutomationProperties.AutomationId="RestoreButton" Click="RestoreClicked"/>
+      </DockPanel>
+    </Border>
+    <ScrollViewer VerticalScrollBarVisibility="Auto">
+      <StackPanel Margin="30,26,30,20">
+        <TextBlock Text="Keep your sound where it belongs." FontSize="26" FontWeight="SemiBold" Margin="0,0,0,8"/>
+        <TextBlock Text="Pick the devices you want. SoundAnchor puts them back whenever Windows switches to something else." Foreground="{DynamicResource TextFillColorSecondaryBrush}" Margin="0,0,0,16"/>
+        <Border CornerRadius="8" Padding="16,13" Margin="0,0,0,14" Background="{DynamicResource CardBackgroundFillColorDefaultBrush}" BorderBrush="{DynamicResource CardStrokeColorDefaultBrush}" BorderThickness="1">
+          <StackPanel>
+            <TextBlock x:Name="StatusText" FontWeight="SemiBold" AutomationProperties.AutomationId="StatusText"/>
+            <TextBlock x:Name="WarningText" Foreground="#E0A458" Margin="0,5,0,0"/>
+          </StackPanel>
+        </Border>
+        <Border CornerRadius="8" Padding="18,16" Background="{DynamicResource CardBackgroundFillColorDefaultBrush}" BorderBrush="{DynamicResource CardStrokeColorDefaultBrush}" BorderThickness="1">
+          <StackPanel>
+            <TextBlock Text="PLAYBACK" FontSize="11" FontWeight="Bold" Foreground="{DynamicResource AccentTextFillColorPrimaryBrush}"/>
+            <Label Content="Speakers or headphones" Target="{Binding ElementName=PlaybackChoice}" Padding="0" Margin="0,8,0,0"/>
+            <ComboBox x:Name="PlaybackChoice" Margin="0,6,0,0" AutomationProperties.AutomationId="PlaybackChoice"/>
+            <TextBlock x:Name="PlaybackStatus" FontSize="12" Margin="2,5,0,0" Foreground="{DynamicResource TextFillColorSecondaryBrush}"/>
+            <Label Content="Speakers or headphones for calls" Target="{Binding ElementName=CallPlaybackChoice}" Padding="0" Margin="0,14,0,0"/>
+            <ComboBox x:Name="CallPlaybackChoice" Margin="0,6,0,0" AutomationProperties.AutomationId="CallPlaybackChoice"/>
+            <TextBlock x:Name="CallPlaybackStatus" FontSize="12" Margin="2,5,0,0" Foreground="{DynamicResource TextFillColorSecondaryBrush}"/>
+            <Separator Margin="0,14,0,2" Background="{DynamicResource DividerStrokeColorDefaultBrush}"/>
+            <TextBlock Text="RECORDING" FontSize="11" FontWeight="Bold" Foreground="{DynamicResource AccentTextFillColorPrimaryBrush}"/>
+            <Label Content="Microphone" Target="{Binding ElementName=RecordingChoice}" Padding="0" Margin="0,8,0,0"/>
+            <ComboBox x:Name="RecordingChoice" Margin="0,6,0,0" AutomationProperties.AutomationId="RecordingChoice"/>
+            <TextBlock x:Name="RecordingStatus" FontSize="12" Margin="2,5,0,0" Foreground="{DynamicResource TextFillColorSecondaryBrush}"/>
+            <Label Content="Microphone for calls" Target="{Binding ElementName=CallRecordingChoice}" Padding="0" Margin="0,14,0,0"/>
+            <ComboBox x:Name="CallRecordingChoice" Margin="0,6,0,0" AutomationProperties.AutomationId="CallRecordingChoice"/>
+            <TextBlock x:Name="CallRecordingStatus" FontSize="12" Margin="2,5,0,0" Foreground="{DynamicResource TextFillColorSecondaryBrush}"/>
+          </StackPanel>
+        </Border>
+        <CheckBox x:Name="StartupCheck" Content="Start SoundAnchor when I sign in" Margin="0,16,0,0" AutomationProperties.AutomationId="StartupCheck" Click="StartupChanged"/>
+        <TextBlock Text="Closing this window keeps protection running in the tray. To change devices in Windows yourself, pause protection first." FontSize="12" Foreground="{DynamicResource TextFillColorTertiaryBrush}" Margin="0,14,0,0"/>
+        <Button x:Name="SimulateButton" Content="Simulate Windows switching devices" Padding="16,9" MinHeight="38" Margin="0,12,0,0" HorizontalAlignment="Left" AutomationProperties.AutomationId="SimulateButton" Click="SimulateClicked" Visibility="Collapsed"/>
+      </StackPanel>
+    </ScrollViewer>
+  </DockPanel>
 </Window>

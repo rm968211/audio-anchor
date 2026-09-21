@@ -1,6 +1,34 @@
-# Latest change: mandatory SemVer and merged-PR releases
+# Latest change: dark Fluent UI, clearer wording and optional code signing
 
-The user required public visibility, master as the default branch, a version.props bump in every PR, developer-selected major/minor/patch, and automatic published releases after merge. Branch protection requires up-to-date Semantic version and Build, test and package checks, including for admins. See VERSIONING.md. This feature raises 0.1.0 to 0.2.0. All 31 local versioning tests and 8 offline release regression tests passed; this PR runs the full Windows/installer suite. Release publication is tested by merging this implementation PR. Follow the live Actions and Releases pages for its final result. This policy supersedes all historical private/draft/tag-only notes below.
+The user reported four UI problems and asked about the installer's unknown-publisher warning. This
+release (0.2.0 to **0.3.0**, minor: user-visible features, no behaviour change to enforcement):
+
+- **Dark theme.** `App.xaml` sets `ThemeMode="Dark"`, which applies the WPF Fluent dark theme to
+  every control and to the window title bar, and follows the user's Windows accent colour. Styles
+  in application scope must stay untemplated: an implicit or explicit `Style` without a `Template`
+  shadows the Fluent control style and drops that control back to the light classic chrome, so
+  spacing now lives on the elements themselves and the primary button uses `AccentButtonStyle`.
+- **One title.** The `SOUNDANCHOR` eyebrow above the heading duplicated the title bar and was
+  clipped at the top of the window; it is gone, leaving a single heading with proper top spacing.
+- **Clearer status lines.** The text under each selector no longer repeats Console/Multimedia role
+  names and device names. It describes what SoundAnchor is doing in plain language, reporting the
+  slot that needs attention most when Console and Multimedia disagree.
+- **Sound control panel button** in a docked bottom bar with the existing actions, opening the
+  classic Sound control panel (`control.exe mmsys.cpl,,0`), which still owns per-role defaults.
+- **Optional Authenticode signing.** `Build-Packages.ps1 -SignToolCommand` signs the published
+  executable, the setup and the uninstaller, using Inno Setup's `$f`/`$q` placeholders; CI passes a
+  `SIGNTOOL_COMMAND` repository secret through when configured. Builds stay unsigned without it.
+  [SIGNING.md](SIGNING.md) explains the warning and compares certificate options.
+
+Verified on 2026-09-21 with .NET SDK 10.0.401 on Windows 11: clean Release build with zero warnings,
+**22 unit/integration tests passed**, the **FlaUI desktop scenario passed** against the new layout,
+31 versioning tests passed, and packaging produced 0.3.0 installer and portable packages. Signing was
+smoke-tested with a temporary self-signed certificate: `SoundAnchor.exe`, `uninst.e32` and the setup
+were all signed, `Get-AuthenticodeSignature` reported the expected signer, and the certificate was
+then deleted. **Not verified:** signing with a real CA-issued certificate, and whether SmartScreen
+stops warning — both need a purchased or granted certificate. `scripts/Test-Releases.ps1` still
+requires PowerShell 7 (`pwsh`); under Windows PowerShell 5.1 it fails in `ConvertFrom-Json` property
+access, on master as well as here, so CI remains its source of truth.
 
 # SoundAnchor — continuation handoff
 

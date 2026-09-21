@@ -7,12 +7,19 @@ the default audio devices. Windows 11 x64; built with C#/.NET 10 and WPF.
 
 Download the installer or portable ZIP from this repository's **Actions → Build, test and release**
 artifacts, or from the Releases page. Extract the portable ZIP before
-running `SoundAnchor.exe`; a separate .NET installation is not required. Initial builds are unsigned.
+running `SoundAnchor.exe`; a separate .NET installation is not required.
+
+Builds are unsigned, so Windows reports an unknown publisher during installation. Verify the
+download against `SHA256SUMS.txt` and choose **More info → Run anyway**, or see
+[code signing](docs/SIGNING.md) for how to publish signed packages.
 
 Choose ordinary playback, communications playback, recording, and communications recording, then
 click **Save and apply**. Each selection can also be left unmanaged. Ordinary playback and recording
-cover both Console and Multimedia roles. The tray menu provides Settings, Pause/Resume, Restore now,
-and Exit. Closing the window keeps the app running. Start at sign-in is optional.
+cover both Console and Multimedia roles. The line under each selector says what SoundAnchor is doing
+with that choice. **Sound control panel** opens the classic Windows Sound dialog; pause protection
+first if a change made there should stick. The tray menu provides Settings, Pause/Resume, Restore
+now, and Exit. Closing the window keeps the app running. Start at sign-in is optional. The window
+uses the dark Fluent theme and your Windows accent colour.
 
 - Manual Windows device changes are also reversed while protection is enabled. Pause first to make
   a temporary change, or change your preferences in SoundAnchor.
@@ -63,6 +70,7 @@ Diagnostic logs are local and size-limited. There is no network service or telem
 - [Approved full plan](docs/PLAN.md)
 - [Current handoff and verification](docs/HANDOFF.md)
 - [Test suite and hardware checklist](docs/TESTING.md)
+- [Code signing and the unknown publisher warning](docs/SIGNING.md)
 - [Agent instructions](AGENTS.md)
 
 The audio setter uses the undocumented Windows `IPolicyConfig` COM interface; it is isolated in
@@ -78,4 +86,5 @@ The manifest drives application metadata, package filenames, installer version, 
 After a PR merges to master, passing version validation, tests, and packaging automatically publishes
 a GitHub release with the installer, portable ZIP, and checksums. Direct pushes do not publish releases.
 Required checks block merges with an unchanged, invalid, or decreasing version. See
-[versioning and release policy](docs/VERSIONING.md). Initial binaries are unsigned.
+[versioning and release policy](docs/VERSIONING.md). Released binaries are unsigned until a signing
+certificate is configured; see [code signing](docs/SIGNING.md).
