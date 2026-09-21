@@ -50,7 +50,6 @@ public partial class MainWindow : Window
         if (!demo) menu.Items.Add("Check for update", null, (_, _) => Dispatcher.BeginInvoke(() => { ShowSettings(); _ = CheckForUpdateAsync(manual: true); }));
         menu.Items.Add("About", null, (_, _) => Dispatcher.BeginInvoke(ShowAbout));
         menu.Items.Add(_pauseMenu);
-        menu.Items.Add("Restore now", null, (_, _) => _worker.Request());
         menu.Items.Add(new Forms.ToolStripSeparator());
         menu.Items.Add("Exit", null, (_, _) => Dispatcher.BeginInvoke(ExitApplication));
         _trayIcon = LoadTrayIcon();

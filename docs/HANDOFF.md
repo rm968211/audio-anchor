@@ -11,6 +11,12 @@ additive UI, no behaviour change to enforcement):
   release exists, or a new confirmation if not.
 - New tray **About** item (`ShowAbout`, no `!demo` gating since it's non-network/non-destructive):
   version, tagline, a clickable link to the GitHub repo, and the license/copyright line.
+- Removed the tray context menu's **"Restore now"** item. It predated this change and was
+  unrelated to the About/up-to-date work, but the user flagged it during review of this branch:
+  the window-level "Restore now" button was already removed earlier in the project, and this tray
+  menu equivalent was the last remaining copy of that affordance. `EnforcementWorker.Request()`
+  stays in place (still called from the constructor's initial enforcement pass), only the manual
+  tray trigger is gone. Updated `docs/PLAN.md`'s tray-menu description to match.
 - **First attempt used `MessageBox` for both the About content and the "up to date" confirmation,
   and the user caught two problems by eye:** the About window's background showed a visible blue
   tint instead of matching the app's neutral dark grey, and the embedded icon looked blurry.
@@ -53,6 +59,31 @@ hook (`AA_TEST_SHOW_ABOUT`/`AA_TEST_SHOW_UPTODATE`, matching the pattern used ea
 project for the update-check banner) called `ShowAbout()`/showed the confirmation directly from
 `MainWindow`'s constructor in demo mode; both env-var branches were removed before committing —
 confirmed via `grep` that no trace of them remains in the committed code.
+
+# Previous change: real screenshots, README installation points at audioanchor.io
+
+This release (2.0.2 to **2.0.3**, patch: docs/assets only, no functional change):
+
+- Replaced both README screenshots (previously GitHub user-attachment links to old, pre-rebrand
+  captures) with two real screenshots the user took of the actual running app on their own machine:
+  `assets/screenshot-app.png` (the settings window, real device names, protected/green state) and
+  `assets/screenshot-tray.png` (the tray flyout with the AudioAnchor icon and its "protecting
+  audio" tooltip). Now stored locally in the repo rather than linked to GitHub's user-attachments
+  CDN, matching how `assets/logo.png` is already referenced.
+- The tray screenshot also shows several unrelated third-party app icons and the user's desktop
+  wallpaper bleeding through the flyout's translucent background. Flagged this before publishing
+  since it reveals more than the screenshot's subject; the user explicitly chose to use it exactly
+  as provided rather than have it cropped down to just the AudioAnchor icon and tooltip.
+- Installation section rewritten from the previous "go to the releases page, find the right asset"
+  walkthrough (with an annotated releases-page screenshot) to a single line pointing at
+  [audioanchor.io](https://audioanchor.io) — the standalone landing site from the prior session
+  (see `audioanchor-site` repo). The domain is not live yet (DNS not configured; the user said
+  that's intentional and being revisited later), but the README now names the intended long-term
+  download path regardless. The SmartScreen warning note is unchanged.
+
+Verified: `README.md` renders correctly via GitHub's markdown render API (fetched with `gh api
+markdown`), confirming both new local image paths and the audioanchor.io link resolve as expected
+markup. No app code changed, so no build/test run for this docs-only change.
 
 # Previous change: adopted the PolyForm Noncommercial License 1.0.0, removed em dashes, AI disclosure
 
