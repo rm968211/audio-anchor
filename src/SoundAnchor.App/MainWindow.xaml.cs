@@ -4,6 +4,7 @@ using System.Reflection;
 using System.Text.Json;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Media;
 using Microsoft.Win32;
 using SoundAnchor.Core;
 using SoundAnchor.Windows;
@@ -20,6 +21,7 @@ public partial class MainWindow : Window
     private readonly IAudioBackend _backend;
     private readonly EnforcementWorker _worker;
     private readonly Forms.NotifyIcon _tray;
+    private readonly System.Drawing.Icon _trayIcon;
     private readonly Forms.ToolStripMenuItem _pauseMenu;
     private readonly GitHubReleaseSource? _updateSource;
     private bool _exiting;
@@ -37,7 +39,7 @@ public partial class MainWindow : Window
         _store = new(dataDirectory);
         var loaded = _store.Load();
         _settings = loaded.Settings;
-        WarningText.Text = loaded.Warning ?? (demo ? "Demo mode — your real audio devices and startup settings are untouched." : "");
+        SetWarning(loaded.Warning ?? (demo ? "Demo mode — your real audio devices and startup settings are untouched." : null));
         _backend = demo ? new SimulatedAudioBackend() : new WindowsAudioBackend();
         _worker = new(_backend, _settings);
         _worker.Updated += OnUpdated;
@@ -48,11 +50,12 @@ public partial class MainWindow : Window
         menu.Items.Add("Restore now", null, (_, _) => _worker.Request());
         menu.Items.Add(new Forms.ToolStripSeparator());
         menu.Items.Add("Exit", null, (_, _) => Dispatcher.BeginInvoke(ExitApplication));
-        _tray = new() { Icon = System.Drawing.SystemIcons.Application, Text = "SoundAnchor", ContextMenuStrip = menu, Visible = true };
+        _trayIcon = LoadTrayIcon();
+        _tray = new() { Icon = _trayIcon, Text = "SoundAnchor", ContextMenuStrip = menu, Visible = true };
         _tray.DoubleClick += (_, _) => ShowSettings();
         StartupCheck.IsEnabled = !demo;
         try { StartupCheck.IsChecked = !demo && StartupRegistration.Enabled; }
-        catch (Exception ex) { WarningText.Text = "Startup setting could not be read: " + ex.Message; }
+        catch (Exception ex) { SetWarning("Startup setting could not be read: " + ex.Message); }
         if (demo) { Title = "SoundAnchor — Demo"; SimulateButton.Visibility = Visibility.Visible; }
         RefreshChoices(true);
         UpdatePause();
@@ -66,6 +69,18 @@ public partial class MainWindow : Window
         }
     }
 
+    private void SetWarning(string? text)
+    {
+        // Collapsed rather than an empty string so the card doesn't reserve a blank line's height.
+        WarningText.Text = text ?? "";
+        WarningText.Visibility = string.IsNullOrEmpty(text) ? Visibility.Collapsed : Visibility.Visible;
+    }
+    private static System.Drawing.Icon LoadTrayIcon()
+    {
+        // Same embedded resource as the window's XAML Icon, so the tray and title bar always match.
+        using var stream = Application.GetResourceStream(new Uri("pack://application:,,,/Assets/icon.ico"))!.Stream;
+        return new System.Drawing.Icon(stream, new System.Drawing.Size(32, 32));
+    }
     private static readonly Version CurrentVersion = ReadCurrentVersion();
     private static Version ReadCurrentVersion()
     {
@@ -92,7 +107,7 @@ public partial class MainWindow : Window
     private void RefreshChoices(bool initial)
     {
         try { _devices = _backend.GetDevices(); }
-        catch (Exception ex) { WarningText.Text = ex.Message; return; }
+        catch (Exception ex) { SetWarning(ex.Message); return; }
         initial |= !_choicesInitialized;
         Fill(PlaybackChoice, AudioFlow.Playback, initial ? _settings.Playback : Preference(PlaybackChoice));
         Fill(CallPlaybackChoice, AudioFlow.Playback, initial ? _settings.CommunicationsPlayback : Preference(CallPlaybackChoice));
@@ -152,6 +167,7 @@ public partial class MainWindow : Window
     {
         if (_exiting) return;
         StatusText.Text = report.Summary;
+        StatusCard.Background = StatusCardBrush(report);
         _tray.Text = _settings.Paused ? "SoundAnchor — paused" : report.HasErrors ? "SoundAnchor — needs attention" : "SoundAnchor — protecting audio";
         RefreshChoices(false);
         string Name(string? id) => id is null ? "no device" : _devices.FirstOrDefault(d => d.Id == id)?.Name ?? "a device that is no longer available";
@@ -177,6 +193,18 @@ public partial class MainWindow : Window
         if (_demo) File.WriteAllText(Path.Combine(_dataDirectory, "demo-status.json"), JsonSerializer.Serialize(report));
     });
     private static int Attention(SlotState state) => state switch { SlotState.Error => 4, SlotState.Waiting => 3, SlotState.Paused => 2, SlotState.Unmanaged => 1, _ => 0 };
+    private static readonly Brush ProtectedStatusBrush = Frozen(Color.FromRgb(0x1B, 0x3A, 0x2E));
+    private static readonly Brush CautionStatusBrush = Frozen(Color.FromRgb(0x3D, 0x2E, 0x12));
+    private static readonly Brush ErrorStatusBrush = Frozen(Color.FromRgb(0x3D, 0x14, 0x14));
+    private static Brush Frozen(Color color) { var brush = new SolidColorBrush(color); brush.Freeze(); return brush; }
+    private Brush StatusCardBrush(EnforcementReport report)
+    {
+        // Mirrors EnforcementReport.Summary's own precedence, so the tint always matches the text.
+        if (report.HasErrors) return ErrorStatusBrush;
+        if (report.Slots.Any(s => s.State is SlotState.Paused or SlotState.Waiting)) return CautionStatusBrush;
+        if (report.Slots.Any(s => s.State == SlotState.Protected)) return ProtectedStatusBrush;
+        return (Brush)FindResource("CardBackgroundFillColorDefaultBrush");
+    }
     private void Log(string message)
     {
         try
@@ -203,6 +231,7 @@ public partial class MainWindow : Window
         _tray.Visible = false;
         _tray.ContextMenuStrip?.Dispose();
         _tray.Dispose();
+        _trayIcon.Dispose();
         Application.Current.Shutdown();
     }
 }

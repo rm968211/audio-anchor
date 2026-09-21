@@ -1,3 +1,5 @@
+<p align="center"><img src="assets/logo.png" width="160" alt="SoundAnchor logo"></p>
+
 # SoundAnchor
 
 A Windows tray app that restores your preferred speakers and microphones whenever Windows changes
@@ -71,6 +73,16 @@ Portable users should turn off start at sign-in and exit before deleting the ext
 Preferences/logs: `%LOCALAPPDATA%\SoundAnchor`. Demo data: `%LOCALAPPDATA%\SoundAnchor-Demo`.
 Diagnostic logs are local and size-limited. There is no telemetry in the app. The only outbound
 network call is the startup check against GitHub's public releases API described above.
+
+## Branding
+
+`assets/icon.ico` is the single source-of-truth application icon: the exe's Win32 icon resource,
+the window/taskbar/Alt-Tab icon, the tray icon, and the installer's icon all reference this one
+file, so replacing it updates every surface at once. `assets/logo.png` is the same mark at full
+resolution for documentation. `assets/installer-wizard-large.bmp` and `-small.bmp` are pre-rendered
+Inno Setup wizard banners generated from the logo; regenerate them (`Image.save(..., sizes=...)`
+with Pillow) rather than hand-editing, since Inno Setup's resource updater rejects an oversized
+`SetupIconFile` (see the comment in `installer/SoundAnchor.iss`).
 
 ## Project documentation
 
