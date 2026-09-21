@@ -5,6 +5,9 @@
 A Windows tray app that restores your preferred speakers and microphones whenever Windows changes
 the default audio devices. Windows 11 x64; built with C#/.NET 10 and WPF.
 
+Free to use, modify, and share for noncommercial purposes under the [PolyForm Noncommercial License
+1.0.0](LICENSE.md). Commercial use is reserved to the copyright holder.
+
 ## Use
 
 Download the installer or portable ZIP from this repository's **Actions → Build, test and release**
@@ -91,6 +94,7 @@ with Pillow) rather than hand-editing, since Inno Setup's resource updater rejec
 - [Test suite and hardware checklist](docs/TESTING.md)
 - [Code signing and the unknown publisher warning](docs/SIGNING.md)
 - [Agent instructions](AGENTS.md)
+- [License](LICENSE.md)
 
 The audio setter uses the undocumented Windows `IPolicyConfig` COM interface; it is isolated in
 `SoundAnchor.Windows`. Future Windows changes may require updating that adapter. Endpoint monitoring
@@ -107,3 +111,11 @@ a GitHub release with the installer, portable ZIP, and checksums. Direct pushes 
 Required checks block merges with an unchanged, invalid, or decreasing version. See
 [versioning and release policy](docs/VERSIONING.md). Released binaries are unsigned until a signing
 certificate is configured; see [code signing](docs/SIGNING.md).
+
+## License
+
+SoundAnchor is source-available, not open source: the [PolyForm Noncommercial License
+1.0.0](LICENSE.md) lets you use, modify, and redistribute it free of charge for any noncommercial
+purpose — personal use, hobby projects, research, education, and nonprofit/government use are all
+covered. Commercial use (offering it, or a derivative of it, as part of a paid product or service,
+or otherwise for commercial advantage) requires a separate license from the copyright holder.

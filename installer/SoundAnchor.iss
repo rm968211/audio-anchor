@@ -9,7 +9,7 @@
 AppId={{82B72C23-769B-48AD-8174-B5ACED8384E2}
 AppName=SoundAnchor
 AppVersion={#AppVersion}
-AppPublisher=SoundAnchor contributors
+AppPublisher=rm968211
 AppPublisherURL=https://github.com/rm968211/sound-anchor
 DefaultDirName={localappdata}\Programs\SoundAnchor
 DefaultGroupName=SoundAnchor

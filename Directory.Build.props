@@ -5,6 +5,7 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
     <Deterministic>true</Deterministic>
-    <Authors>SoundAnchor contributors</Authors>
+    <Authors>rm968211</Authors>
+    <Copyright>Copyright rm968211. All rights reserved except as granted by the PolyForm Noncommercial License 1.0.0.</Copyright>
   </PropertyGroup>
 </Project>

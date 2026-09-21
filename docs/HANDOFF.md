@@ -1,4 +1,34 @@
-# Latest change: 1.0 — status card fix, installer wording, protection color
+# Latest change: adopted the PolyForm Noncommercial License 1.0.0
+
+The user does not want this repository open source: they want sole ownership, free use for
+everyone else for noncommercial purposes, and commercial use reserved exclusively to them. This
+release (1.0.0 to **1.0.1**, patch: legal/metadata only, no functional change):
+
+- Added `LICENSE.md` at repo root with the verbatim official text of the PolyForm Noncommercial
+  License 1.0.0 (fetched from polyformproject.org, not paraphrased), including the
+  `Required Notice: Copyright rm968211 (...)` line the license itself requires be carried forward
+  by redistributors. The user chose "rm968211" (their GitHub handle) as the copyright holder name
+  when asked, over using a real legal name.
+- Updated `Directory.Build.props` (`Authors`, new `Copyright` property, flows into every project's
+  assembly attributes) and `installer/SoundAnchor.iss` (`AppPublisher`) from the old placeholder
+  "SoundAnchor contributors" to "rm968211", consistent with sole ownership.
+- Added a plain-English `## License` section to README.md plus a one-line mention under the app
+  description, and a `LICENSE.md` link in the project documentation list.
+- Added a durable note to AGENTS.md: this repo is source-available under PolyForm Noncommercial,
+  not open source, and future agents should never suggest relicensing/dual-licensing without being
+  asked.
+
+**Not done:** no Inno Setup `LicenseFile` acceptance page was added to the installer — the user
+asked about the software's license, not for an install-time acceptance gate, so that would have
+been scope creep. GitHub's own "License" sidebar detection was not independently verified (their
+`licensee` matcher may or may not recognize PolyForm Noncommercial by fingerprint even though the
+`LICENSE.md` file itself is the authoritative source regardless of what the sidebar shows).
+
+**Known conflict:** this PR and the concurrent `simplify-readme` PR both bump `version.props` to
+1.0.1 from the same 1.0.0 base. Whichever merges second must rebase and choose a new version before
+merge — normal under this repo's concurrent-PR policy, not an error.
+
+# Previous change: 1.0 — status card fix, installer wording, protection color
 
 Follow-up to the logo PR, added to the same branch before merge. This release (0.5.0 to **1.0.0**,
 the user's explicit choice — not a semver-meaning bump, just the version they asked for):
