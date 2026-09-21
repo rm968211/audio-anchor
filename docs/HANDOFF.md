@@ -1,4 +1,66 @@
-# Latest change: real screenshots, README installation points at audioanchor.io
+# Latest change: up-to-date confirmation, tray About, a themed dialog to replace MessageBox
+
+The user wanted visual confirmation from the manual "Check for update" tray item when there's
+nothing new (previously silent either way, which read as broken when clicked), plus a tray "About"
+item showing the version and other basics. This release (2.0.2 to **2.1.0**, minor: purely
+additive UI, no behaviour change to enforcement):
+
+- `CheckForUpdateAsync` takes a `manual` parameter. The automatic startup check still stays fully
+  silent regardless of outcome (matches the existing design philosophy and demo mode's offline
+  guarantee), but a manual click now always shows something: the existing banner if a newer
+  release exists, or a new confirmation if not.
+- New tray **About** item (`ShowAbout`, no `!demo` gating since it's non-network/non-destructive):
+  version, tagline, a clickable link to the GitHub repo, and the license/copyright line.
+- Removed the tray context menu's **"Restore now"** item. It predated this change and was
+  unrelated to the About/up-to-date work, but the user flagged it during review of this branch:
+  the window-level "Restore now" button was already removed earlier in the project, and this tray
+  menu equivalent was the last remaining copy of that affordance. `EnforcementWorker.Request()`
+  stays in place (still called from the constructor's initial enforcement pass), only the manual
+  tray trigger is gone. Updated `docs/PLAN.md`'s tray-menu description to match.
+- **First attempt used `MessageBox` for both the About content and the "up to date" confirmation,
+  and the user caught two problems by eye:** the About window's background showed a visible blue
+  tint instead of matching the app's neutral dark grey, and the embedded icon looked blurry.
+  Root causes: (1) a `Window` with no explicit `Background` gets WPF Fluent's default translucent
+  Mica-style backdrop, which was bleeding through the desktop wallpaper behind the window — fixed
+  with `Background="{DynamicResource SolidBackgroundFillColorBaseBrush}"`, the Fluent token for an
+  opaque app background, which disables the translucency; (2) the `Image` requested the icon at
+  56×56, a size not embedded in `assets/icon.ico` (16/24/32/48/64/128/256), forcing a blurry
+  rescale — changed to 64×64, an exact embedded frame. Screenshotted before and after both fixes
+  to confirm.
+- **Also discovered along the way:** `MessageBox` is a native Win32 dialog and does not follow
+  WPF's `ThemeMode`, so it always renders in the system's light chrome regardless of the rest of
+  the app being dark — visibly inconsistent once screenshotted. Added `InfoDialog`, a small themed
+  window (same background fix, same fonts) as a MessageBox stand-in for this new confirmation.
+  Existing `ShowError`/`MessageBox.Show` call sites elsewhere in the app were deliberately left
+  alone — out of scope for this task, and replacing every MessageBox usage app-wide is a larger,
+  separate decision the user hasn't asked for.
+- Neither new window sets `Owner`: `App.xaml.cs` only calls `ShowSettings()` on startup when not
+  launched with `--background`, so `MainWindow` may not have a window handle yet when a tray click
+  fires, and WPF requires an owner to already have one.
+- **Follow-up after the user looked at the actual running app on their own machine:** the 64x64
+  `icon.ico` frame still looked "extremely blurry" for real, even though my own screenshot looked
+  fine. This environment's display reports 100% DPI scaling, so it couldn't reproduce the bug, but
+  the mechanism is real regardless: WPF re-rasterizes a fixed-size decoded ico frame to physical
+  pixels at whatever the actual DPI scale factor is, and any scale other than exactly 100% blurs a
+  frame that was already "exactly" the requested logical size. Fixed by embedding `assets/logo.png`
+  (1254x1254) as a second `Resource` in the csproj and using that instead of `icon.ico` for this
+  one on-screen `Image`, with `RenderOptions.BitmapScalingMode="HighQuality"`: downscaling from a
+  source far larger than any plausible display size stays crisp under any DPI factor, so there's no
+  "pick the right frame" problem to get wrong. `icon.ico` is unchanged for the exe/taskbar/title-bar
+  icon and the tray icon, where multi-resolution ico selection is exactly the right tool.
+
+Verified with .NET SDK 10.0.401 on Windows 11: clean Release build, zero warnings, all 39
+unit/integration tests and the FlaUI desktop scenario pass (both new windows are demo-mode-safe
+and untouched by the existing test, since they're only reachable via the tray menu). Both new
+windows and the fixed styling were screenshotted directly rather than assumed correct: real tray
+automation wasn't attempted (right-clicking a live system tray icon by screen coordinates is
+fragile and was already judged not worth it earlier in this project), so a temporary env-var test
+hook (`AA_TEST_SHOW_ABOUT`/`AA_TEST_SHOW_UPTODATE`, matching the pattern used earlier in this
+project for the update-check banner) called `ShowAbout()`/showed the confirmation directly from
+`MainWindow`'s constructor in demo mode; both env-var branches were removed before committing —
+confirmed via `grep` that no trace of them remains in the committed code.
+
+# Previous change: real screenshots, README installation points at audioanchor.io
 
 This release (2.0.2 to **2.0.3**, patch: docs/assets only, no functional change):
 

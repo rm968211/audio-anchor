@@ -16,5 +16,8 @@
   <ItemGroup>
     <!-- Linked so the pack URI used by MainWindow.xaml and the tray icon is Assets/icon.ico regardless of the source path. -->
     <Resource Include="..\..\assets\icon.ico" Link="Assets\icon.ico" />
+    <!-- Full-resolution source for on-screen display (AboutWindow): downscaling a 1254x1254 PNG
+         stays crisp at any DPI scale factor, unlike picking one small frame out of icon.ico. -->
+    <Resource Include="..\..\assets\logo.png" Link="Assets\logo.png" />
   </ItemGroup>
 </Project>

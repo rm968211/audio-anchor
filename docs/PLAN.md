@@ -57,7 +57,7 @@ changes are in scope. No device driver, background Windows service, or global re
 ## Application architecture and UI
 
 C# / .NET 10 LTS / WPF, Windows 11 x64 initially. Separate Core policy/settings, Windows audio
-interop, desktop app, and tests. A tray icon exposes Settings, Pause/Resume, Restore now, and Exit.
+interop, desktop app, and tests. A tray icon exposes Settings, Check for update, About, Pause/Resume, and Exit.
 Closing the settings window hides it while enforcement continues. Optional start at sign-in,
 single instance per user session, persisted preferences, bounded local diagnostic logs, and a
 visible status panel. The app normally runs without administrator privileges. Exiting stops

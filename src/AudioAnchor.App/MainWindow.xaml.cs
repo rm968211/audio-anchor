@@ -47,9 +47,9 @@ public partial class MainWindow : Window
         var menu = new Forms.ContextMenuStrip();
         menu.Items.Add("Settings", null, (_, _) => Dispatcher.BeginInvoke(ShowSettings));
         // Demo mode stays offline; the update source below is never created for it, so there is nothing to check.
-        if (!demo) menu.Items.Add("Check for update", null, (_, _) => Dispatcher.BeginInvoke(() => { ShowSettings(); _ = CheckForUpdateAsync(); }));
+        if (!demo) menu.Items.Add("Check for update", null, (_, _) => Dispatcher.BeginInvoke(() => { ShowSettings(); _ = CheckForUpdateAsync(manual: true); }));
+        menu.Items.Add("About", null, (_, _) => Dispatcher.BeginInvoke(ShowAbout));
         menu.Items.Add(_pauseMenu);
-        menu.Items.Add("Restore now", null, (_, _) => _worker.Request());
         menu.Items.Add(new Forms.ToolStripSeparator());
         menu.Items.Add("Exit", null, (_, _) => Dispatcher.BeginInvoke(ExitApplication));
         _trayIcon = LoadTrayIcon();
@@ -90,13 +90,20 @@ public partial class MainWindow : Window
         var numeric = informational?.Split('+')[0];
         return numeric is not null && Version.TryParse(numeric, out var version) ? version : new Version(0, 0, 0);
     }
-    private async Task CheckForUpdateAsync()
+    private async Task CheckForUpdateAsync(bool manual = false)
     {
         using var timeout = new CancellationTokenSource(TimeSpan.FromSeconds(5));
         var release = await UpdateChecker.CheckAsync(_updateSource!, CurrentVersion, timeout.Token);
-        if (release is null || _exiting) return;
+        if (_exiting) return;
+        if (release is null)
+        {
+            // The automatic startup check stays silent either way; only a manual click confirms
+            // the "nothing to do" outcome, since silence there reads as the button not working.
+            if (manual) new InfoDialog($"You're up to date. AudioAnchor {CurrentVersion} is the latest version.").ShowDialog();
+            return;
+        }
         _updateUrl = release.Url;
-        UpdateBannerText.Text = $"AudioAnchor {release.Version} is available — you have {CurrentVersion}.";
+        UpdateBannerText.Text = $"AudioAnchor {release.Version} is available. You have {CurrentVersion}.";
         UpdateBanner.Visibility = Visibility.Visible;
     }
     private void UpdateBannerClicked(object sender, RoutedEventArgs e)
@@ -220,6 +227,9 @@ public partial class MainWindow : Window
     }
     private void ShowError(Exception ex) { Log(ex.ToString()); MessageBox.Show(this, ex.Message, "AudioAnchor", MessageBoxButton.OK, MessageBoxImage.Error); }
     public void ShowSettings() { Show(); WindowState = WindowState.Normal; Activate(); }
+    // No Owner: MainWindow may not have a window handle yet if launched with --background
+    // and Settings was never opened, which WPF requires before it can own another window.
+    private void ShowAbout() => new AboutWindow(CurrentVersion).ShowDialog();
     protected override void OnClosing(CancelEventArgs e) { if (!_exiting) { e.Cancel = true; Hide(); } base.OnClosing(e); }
     public async void ExitApplication()
     {
