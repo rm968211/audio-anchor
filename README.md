@@ -1,5 +1,7 @@
 <p align="center"><img src="assets/logo.png" width="160" alt="AudioAnchor logo"></p>
 
+<p align="center"><a href="https://www.buymeacoffee.com/rm968211" target="_blank"><img src="https://cdn.buymeacoffee.com/buttons/v2/default-red.png" alt="Buy Me a Coffee" style="height: 60px !important;width: 217px !important;"></a></p>
+
 # AudioAnchor
 
 Tired of Windows automatically changing your default audio devices when something is plugged in? AudioAnchor is a simple Windows tray app that restores your preferred speakers and microphones whenever Windows changes the default audio devices.
