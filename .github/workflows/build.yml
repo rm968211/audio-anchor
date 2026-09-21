@@ -1,0 +1,70 @@
+name: Build, test and package
+
+on:
+  push:
+    branches: [main]
+    tags: ['v*']
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  windows:
+    runs-on: windows-latest
+    timeout-minutes: 25
+    defaults:
+      run:
+        shell: pwsh
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - uses: actions/setup-dotnet@a98b56852c35b8e3190ac28c8c2271da59106c68 # v6.0.0
+        with:
+          dotnet-version: '10.0.x'
+      - name: Unit, integration and desktop tests
+        run: ./scripts/Test.ps1
+      - name: Install verified Inno compiler
+        run: ./scripts/Install-InnoCompiler.ps1
+      - name: Build portable and installer packages
+        run: |
+          $version = '0.1.0'
+          if ($env:GITHUB_REF_TYPE -eq 'tag') { $version = $env:GITHUB_REF_NAME.TrimStart('v') }
+          ./scripts/Build-Packages.ps1 -Version $version -InnoCompiler .tools/inno/ISCC.exe
+      - name: Installer lifecycle test
+        run: |
+          $installer = Get-ChildItem artifacts/packages/*-Setup.exe | Select-Object -First 1
+          ./scripts/Test-Installer.ps1 -Installer $installer.FullName
+      - name: Upload test evidence
+        if: always()
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        with:
+          name: test-results
+          path: artifacts/test-results/
+          if-no-files-found: warn
+      - name: Upload installable packages
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        with:
+          name: SoundAnchor-win-x64
+          path: artifacts/packages/
+          if-no-files-found: error
+
+  draft-release:
+    if: startsWith(github.ref, 'refs/tags/v')
+    needs: windows
+    runs-on: windows-latest
+    permissions:
+      contents: write
+      actions: read
+    steps:
+      - name: Download packages and create draft release
+        shell: pwsh
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
+        run: |
+          gh run download $env:GITHUB_RUN_ID -n SoundAnchor-win-x64 -D packages
+          if ($LASTEXITCODE) { throw 'Artifact download failed' }
+          $assets = (Get-ChildItem packages -File).FullName
+          gh release create $env:GITHUB_REF_NAME @assets --draft --verify-tag --title "SoundAnchor $env:GITHUB_REF_NAME" --generate-notes
+          if ($LASTEXITCODE) { throw 'Draft release creation failed' }

@@ -1,0 +1,20 @@
+# SoundAnchor agent handoff
+
+Read `docs/PLAN.md` before changing scope and `docs/HANDOFF.md` before continuing work.
+The user approved implementation, a new private GitHub repository under their authenticated account,
+Windows installers with uninstall, GitHub Actions artifacts, and a full test automation suite.
+
+- Build a Windows 11 x64, .NET 10 WPF tray application. Keep all six audio roles correct.
+- Four user selections: ordinary playback, communications playback, ordinary recording,
+  communications recording. Ordinary selections manage Console and Multimedia together.
+- Use native Core Audio notifications; never block inside COM notification callbacks.
+- Pause and unmanaged roles must never write defaults. Missing devices must not erase preferences.
+- Do not identify devices by friendly name alone. Do not silently select replacements with a new ID.
+- Test policy behavior independently of Windows; run integration, UI, and packaging tests too.
+- Tests must not change the developer's real audio defaults or startup settings implicitly.
+- Keep source, documentation, and automation in this repository. Never commit credentials or build outputs.
+- Update HANDOFF with completed work, exact verification results, remaining gaps, and next steps.
+- Do not claim physical USB/Bluetooth, sleep, or audio-service recovery is tested based on simulations.
+- Keep published releases in draft until they are ready for review. Initial binaries are unsigned.
+
+See `docs/TESTING.md` for commands and hardware checks.
