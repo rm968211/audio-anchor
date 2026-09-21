@@ -18,5 +18,9 @@ Windows installers with uninstall, GitHub Actions artifacts, and a full test aut
 - Every PR to master MUST increase version.props. The developer chooses major, minor, or patch.
 - Merged PRs publish a GitHub release automatically after passing validation/tests. Initial binaries are unsigned.
 - The repository is public at the user's explicit request. See docs/VERSIONING.md.
+- Licensed under the PolyForm Noncommercial License 1.0.0 (see LICENSE.md) — source-available, not
+  open source. Free for any noncommercial use; commercial use is reserved to rm968211, the sole
+  copyright holder. Never suggest relicensing, dual-licensing, or adding an OSI-approved license
+  without the user explicitly asking.
 
 See `docs/TESTING.md` for commands and hardware checks.

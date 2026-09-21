@@ -1,4 +1,40 @@
-# Latest change: manual update check, and a real SoundAnchor→AudioAnchor upgrade path
+# Latest change: adopted the PolyForm Noncommercial License 1.0.0, removed em dashes, AI disclosure
+
+The user does not want this repository open source: they want sole ownership, free use for
+everyone else for noncommercial purposes, and commercial use reserved exclusively to them. This
+release (2.0.1 to **2.0.2**, patch: legal/metadata only, no functional change):
+
+- Added `LICENSE.md` at repo root with the verbatim official text of the PolyForm Noncommercial
+  License 1.0.0 (fetched from polyformproject.org, not paraphrased), including the
+  `Required Notice: Copyright rm968211 (...)` line the license itself requires be carried forward
+  by redistributors. The user chose "rm968211" (their GitHub handle) as the copyright holder name
+  when asked, over using a real legal name.
+- Updated `Directory.Build.props` (`Authors`, new `Copyright` property, flows into every project's
+  assembly attributes) and `installer/AudioAnchor.iss` (`AppPublisher`) from the old placeholder
+  ("SoundAnchor contributors", later "AudioAnchor contributors" after the rename) to "rm968211",
+  consistent with sole ownership.
+- Added a plain-English `## License` section to README.md, and a durable note to AGENTS.md that
+  this repo is source-available under PolyForm Noncommercial, not open source, and future agents
+  should never suggest relicensing/dual-licensing without being asked.
+- Per a follow-up request on this same branch: removed every em dash from README.md (replaced with
+  commas, periods, or colons depending on the sentence), and added an `## AI disclosure` section at
+  the end of README.md stating AI (Claude) was used in the project's creation under the copyright
+  holder's direction and review.
+- This branch was opened before the SoundAnchor→AudioAnchor rename and the README simplification
+  both merged to master, which left it with real merge conflicts (README.md, Directory.Build.props,
+  installer's `.iss`, version.props) — and, it turned out, silently stopped GitHub Actions from
+  triggering `pull_request`-event runs on further pushes to this branch, since GitHub cannot compute
+  a merge ref for a PR in a conflicting state. Rebasing/merging master into this branch resolved
+  both the conflicts and the missing CI runs; see the "Merge order" note in prior entries below for
+  why this branch was always going to need that regardless.
+
+**Not done:** no Inno Setup `LicenseFile` acceptance page was added to the installer — the user
+asked about the software's license, not for an install-time acceptance gate, so that would have
+been scope creep. GitHub's own "License" sidebar detection was not independently verified (their
+`licensee` matcher may or may not recognize PolyForm Noncommercial by fingerprint even though the
+`LICENSE.md` file itself is the authoritative source regardless of what the sidebar shows).
+
+# Previous change: manual update check, and a real SoundAnchor→AudioAnchor upgrade path
 
 Added to the `simplify-readme` branch per the user's explicit instruction, alongside the README
 fixes. This release (2.0.0 to **2.0.1**, patch — no behaviour change for users who were never on

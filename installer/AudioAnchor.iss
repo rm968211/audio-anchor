@@ -9,7 +9,7 @@
 AppId={{82B72C23-769B-48AD-8174-B5ACED8384E2}
 AppName=AudioAnchor
 AppVersion={#AppVersion}
-AppPublisher=AudioAnchor contributors
+AppPublisher=rm968211
 AppPublisherURL=https://github.com/rm968211/audio-anchor
 DefaultDirName={localappdata}\Programs\AudioAnchor
 DefaultGroupName=AudioAnchor
