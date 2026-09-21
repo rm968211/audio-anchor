@@ -5,8 +5,8 @@ the default audio devices. Windows 11 x64; built with C#/.NET 10 and WPF.
 
 ## Use
 
-Download the installer or portable ZIP from this repository's **Actions → Build, test and package**
-artifacts, or from a draft/released version on the Releases page. Extract the portable ZIP before
+Download the installer or portable ZIP from this repository's **Actions → Build, test and release**
+artifacts, or from the Releases page. Extract the portable ZIP before
 running `SoundAnchor.exe`; a separate .NET installation is not required. Initial builds are unsigned.
 
 Choose ordinary playback, communications playback, recording, and communications recording, then
@@ -71,6 +71,11 @@ uses Microsoft's documented `IMMNotificationClient` callbacks. See PLAN.md for u
 
 ## Releases
 
-Pushes and pull requests build, test, and produce packages. Push a tag such as `v0.1.0` to create a
-**draft** GitHub release with installer, portable ZIP, and SHA-256 checksums after all checks pass.
-Review hardware validation before publishing. ARM64, signing, and automatic updates are future work.
+Every PR to master MUST increase the stable SemVer version in `version.props`. The developer decides
+whether major, minor, or patch is appropriate. This includes dependency, documentation, and build PRs.
+The manifest drives application metadata, package filenames, installer version, and release tag.
+
+After a PR merges to master, passing version validation, tests, and packaging automatically publishes
+a GitHub release with the installer, portable ZIP, and checksums. Direct pushes do not publish releases.
+Required checks block merges with an unchanged, invalid, or decreasing version. See
+[versioning and release policy](docs/VERSIONING.md). Initial binaries are unsigned.

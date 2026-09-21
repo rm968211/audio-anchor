@@ -1,6 +1,7 @@
-param([string]$Version = '0.1.0', [string]$InnoCompiler)
+param([string]$InnoCompiler)
 $ErrorActionPreference = 'Stop'
-if ($Version -notmatch '^\d+\.\d+\.\d+$') { throw 'Version must be major.minor.patch' }
+. (Join-Path $PSScriptRoot 'Versioning.ps1')
+$Version = (Get-ProductVersion).ToString()
 $repo = Split-Path $PSScriptRoot -Parent
 Push-Location $repo
 try {
@@ -13,7 +14,7 @@ try {
         Remove-Item -LiteralPath $resolved -Recurse -Force
     }
     New-Item -ItemType Directory -Force -Path $packages | Out-Null
-    dotnet publish src/SoundAnchor.App -c Release -r win-x64 --self-contained true -p:Version=$Version -p:DebugType=None -o $publish
+    dotnet publish src/SoundAnchor.App -c Release -r win-x64 --self-contained true -p:DebugType=None -o $publish
     if ($LASTEXITCODE) { throw 'Publish failed' }
     Copy-Item -LiteralPath (Join-Path $repo 'README.md') -Destination $publish
     Compress-Archive -Path "$publish/*" -DestinationPath (Join-Path $packages "SoundAnchor-$Version-win-x64-Portable.zip") -Force
