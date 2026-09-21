@@ -11,6 +11,15 @@ The user approved the full plan in PLAN.md, implementation, private repo creatio
 Actions artifacts, appropriate unit testing and a complete automation suite. They asked for frequent
 updates and noted limited credits. Preserve concrete progress in commits and this document.
 
+## Latest verification (2026-09-21)
+
+- Initial implementation committed and pushed as 90829c2.
+- After relocation: clean Release build, 22 unit/integration tests and 1 UI scenario passed.
+- Native enumeration passed: 85 endpoints and 6 defaults on the development machine.
+- Native setter reassertion passed for all six roles; no different audio device was selected.
+- Installer EXE and portable ZIP compiled successfully; lifecycle and hosted CI checks in progress.
+- Added startup-recovery UI fix so delayed audio enumeration retains saved selections.
+
 ## Implemented
 
 - Core six-role policy, event-driven serialized worker, retries, health checks, pause, settings/backup.

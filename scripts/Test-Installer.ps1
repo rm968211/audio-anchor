@@ -17,6 +17,7 @@ function Run-Hidden([string]$File, [string[]]$Arguments) {
     if (-not $process.WaitForExit(120000)) { throw "Timed out: $File" }
     if ($process.ExitCode -ne 0) { throw "Failed with exit code $($process.ExitCode): $File" }
 }
+$uninstalled = $false
 try {
     Run-Hidden $installerPath @('/VERYSILENT', '/SUPPRESSMSGBOXES', '/NORESTART', '/TASKS=startup', "/DIR=`"$installDir`"", "/LOG=`"$testRoot\install.log`"")
     $exe = Join-Path $installDir 'SoundAnchor.exe'
@@ -36,13 +37,14 @@ try {
     Run-Hidden $installerPath @('/VERYSILENT', '/SUPPRESSMSGBOXES', '/NORESTART', "/DIR=`"$installDir`"", "/LOG=`"$testRoot\upgrade.log`"")
     if ((Get-Content -LiteralPath (Join-Path $demoDir 'settings.json') -Raw).Trim() -ne $marker) { throw 'Upgrade changed preferences' }
     Run-Hidden (Join-Path $installDir 'unins000.exe') @('/VERYSILENT', '/SUPPRESSMSGBOXES', '/NORESTART', "/LOG=`"$testRoot\uninstall.log`"")
+    $uninstalled = $true
     if (Test-Path -LiteralPath $exe) { throw 'Uninstall left the application executable' }
     if (Test-Path -LiteralPath $uninstallKey) { throw 'Uninstall registration remains' }
     if (Get-ItemProperty -LiteralPath $startupKey -Name SoundAnchor -ErrorAction SilentlyContinue) { throw 'Startup registration remains' }
     if (-not (Test-Path -LiteralPath (Join-Path $demoDir 'settings.json'))) { throw 'Uninstall deleted unrelated demo preferences' }
     Write-Output "Installer lifecycle passed. Logs: $testRoot"
 } finally {
-    if (Test-Path -LiteralPath (Join-Path $installDir 'unins000.exe')) {
+    if (-not $uninstalled -and (Test-Path -LiteralPath (Join-Path $installDir 'unins000.exe'))) {
         Run-Hidden (Join-Path $installDir 'unins000.exe') @('/VERYSILENT', '/SUPPRESSMSGBOXES', '/NORESTART')
     }
     $results = Join-Path (Split-Path $PSScriptRoot -Parent) 'artifacts/test-results/installer'

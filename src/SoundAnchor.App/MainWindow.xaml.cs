@@ -20,6 +20,7 @@ public partial class MainWindow : Window
     private readonly Forms.NotifyIcon _tray;
     private readonly Forms.ToolStripMenuItem _pauseMenu;
     private bool _exiting;
+    private bool _choicesInitialized;
     private string? _lastError;
     private IReadOnlyList<AudioDevice> _devices = [];
     private sealed record Choice(string? Id, string Name, string Display) { public override string ToString() => Display; }
@@ -59,10 +60,12 @@ public partial class MainWindow : Window
     {
         try { _devices = _backend.GetDevices(); }
         catch (Exception ex) { WarningText.Text = ex.Message; return; }
+        initial |= !_choicesInitialized;
         Fill(PlaybackChoice, AudioFlow.Playback, initial ? _settings.Playback : Preference(PlaybackChoice));
         Fill(CallPlaybackChoice, AudioFlow.Playback, initial ? _settings.CommunicationsPlayback : Preference(CallPlaybackChoice));
         Fill(RecordingChoice, AudioFlow.Recording, initial ? _settings.Recording : Preference(RecordingChoice));
         Fill(CallRecordingChoice, AudioFlow.Recording, initial ? _settings.CommunicationsRecording : Preference(CallRecordingChoice));
+        _choicesInitialized = true;
     }
     private void Fill(ComboBox combo, AudioFlow flow, DevicePreference? selected)
     {
