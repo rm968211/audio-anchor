@@ -18,7 +18,7 @@ Tired of Windows automatically changing your default audio devices when somethin
    </p>
 
 > [!NOTE]
-> You may receive a popup saying "Windows protected your PC. Microsoft Defender SmartScreen prevented an unrecognized app from starting. Running this app might put your PC at risk." This is normal for a new, unsigned app — click **More info**, then **Run anyway**.
+> You may receive a popup saying "Windows protected your PC. Microsoft Defender SmartScreen prevented an unrecognized app from starting. Running this app might put your PC at risk." This is normal, you can click **More info**, then **Run anyway**.
 
 ## Build and test
 
