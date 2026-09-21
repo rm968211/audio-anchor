@@ -28,7 +28,7 @@ uses the dark Fluent theme and your Windows accent colour.
 
 On startup, the app checks this repository's latest GitHub release and shows a banner in the window
 if a newer stable version is available; **View release** opens its release page. The check is a
-single anonymous request to GitHub's public releases API — no other data is sent, and it never
+single anonymous request to GitHub's public releases API, no other data is sent, and it never
 blocks startup or the audio enforcement path. It only runs outside demo mode, and a failed or
 offline check is silently skipped.
 
@@ -116,6 +116,11 @@ certificate is configured; see [code signing](docs/SIGNING.md).
 
 SoundAnchor is source-available, not open source: the [PolyForm Noncommercial License
 1.0.0](LICENSE.md) lets you use, modify, and redistribute it free of charge for any noncommercial
-purpose — personal use, hobby projects, research, education, and nonprofit/government use are all
+purpose: personal use, hobby projects, research, education, and nonprofit/government use are all
 covered. Commercial use (offering it, or a derivative of it, as part of a paid product or service,
 or otherwise for commercial advantage) requires a separate license from the copyright holder.
+
+## AI disclosure
+
+AI (Claude) was used in the creation of this project, including source code, tests, documentation,
+and build/release automation, under the direction and review of the copyright holder.
