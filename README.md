@@ -1,42 +1,29 @@
+<p align="center">
+  <a href="https://github.com/rm968211/audio-anchor/actions/workflows/build.yml"><img src="https://github.com/rm968211/audio-anchor/actions/workflows/build.yml/badge.svg" alt="Build status"></a>
+  <a href="https://www.buymeacoffee.com/rm968211"><img src="https://img.shields.io/badge/Buy%20Me%20A%20Coffee-FFDD00?style=flat&logo=buymeacoffee&logoColor=black" alt="Buy Me A Coffee"></a>
+</p>
+
 <p align="center"><img src="assets/logo.png" width="160" alt="AudioAnchor logo"></p>
 
 # AudioAnchor
 
-A Windows tray app that restores your preferred speakers and microphones whenever Windows changes
-the default audio devices. Windows 11 x64; built with C#/.NET 10 and WPF.
+Tired of Windows automatically changing your default audio devices when something is plugged in? AudioAnchor is a simple Windows tray app that restores your preferred speakers and microphones whenever Windows changes the default audio devices.
 
-## Use
+<p align="center">
+  <img width="440" alt="AudioAnchor's settings window, showing protected playback and recording devices" src="https://github.com/user-attachments/assets/6d214017-f9c1-4df6-8c4f-0eafbb07c23a">
+</p>
 
-Download the installer or portable ZIP from this repository's **Actions → Build, test and release**
-artifacts, or from the Releases page. Extract the portable ZIP before
-running `AudioAnchor.exe`; a separate .NET installation is not required.
+## Installation
 
-Builds are unsigned, so Windows reports an unknown publisher during installation. Verify the
-download against `SHA256SUMS.txt` and choose **More info → Run anyway**, or see
-[code signing](docs/SIGNING.md) for how to publish signed packages.
+1. Navigate to the [releases page](https://github.com/rm968211/audio-anchor/releases) and locate the latest version.
+2. Download and run the `win-x64-Setup.exe` file. For those that prefer a portable version, download the portable `.zip`, extract, and run `AudioAnchor.exe`.
 
-Choose ordinary playback, communications playback, recording, and communications recording, then
-click **Save and apply**. Each selection can also be left unmanaged. Ordinary playback and recording
-cover both Console and Multimedia roles. The line under each selector says what AudioAnchor is doing
-with that choice. **Sound control panel** opens the classic Windows Sound dialog; pause protection
-first if a change made there should stick. The tray menu provides Settings, Pause/Resume, Restore
-now, and Exit. Closing the window keeps the app running. Start at sign-in is optional. The window
-uses the dark Fluent theme and your Windows accent colour.
+   <p align="center">
+     <img width="720" alt="The GitHub releases page, with the win-x64-Setup.exe asset highlighted" src="https://github.com/user-attachments/assets/d31bd10c-49b7-4e66-929f-cf026ce71213">
+   </p>
 
-On startup, the app checks this repository's latest GitHub release and shows a banner in the window
-if a newer stable version is available; **View release** opens its release page. The check is a
-single anonymous request to GitHub's public releases API — no other data is sent, and it never
-blocks startup or the audio enforcement path. It only runs outside demo mode, and a failed or
-offline check is silently skipped.
-
-- Manual Windows device changes are also reversed while protection is enabled. Pause first to make
-  a temporary change, or change your preferences in AudioAnchor.
-- Unplugging a preferred device preserves the preference. Windows may select a temporary replacement;
-  AudioAnchor restores the original endpoint when it reconnects.
-- A driver that changes an endpoint's identity requires reselection; the app does not guess by name.
-- A brief interruption can happen before correction. Apps with explicit audio routing may ignore the
-  Windows default. The app does not change volumes, mute, formats, or per-app routes.
-- Exiting or uninstalling stops enforcement and leaves the current audio defaults in place.
+> [!NOTE]
+> You may receive a popup saying "Windows protected your PC. Microsoft Defender SmartScreen prevented an unrecognized app from starting. Running this app might put your PC at risk." This is normal, you can click **More info**, then **Run anyway**.
 
 ## Build and test
 
@@ -62,39 +49,6 @@ Demo mode uses simulated devices and separate preferences; it cannot change real
 startup settings. `--data-dir <directory>` selects an isolated preferences folder for tests.
 `--background` starts in the tray, and `--exit` asks the matching instance to exit.
 `--diagnose <file.json>` writes a read-only native endpoint/default report and exits.
-
-## Install, upgrade, uninstall
-
-The per-user installer does not require administrator privileges. Run a newer installer to upgrade;
-preferences are preserved. Uninstall from Windows Installed apps. The uninstaller removes its startup
-registration and offers to remove saved preferences and logs. Silent uninstall retains preferences.
-Portable users should turn off start at sign-in and exit before deleting the extracted directory.
-
-Preferences/logs: `%LOCALAPPDATA%\AudioAnchor`. Demo data: `%LOCALAPPDATA%\AudioAnchor-Demo`.
-Diagnostic logs are local and size-limited. There is no telemetry in the app. The only outbound
-network call is the startup check against GitHub's public releases API described above.
-
-## Branding
-
-`assets/icon.ico` is the single source-of-truth application icon: the exe's Win32 icon resource,
-the window/taskbar/Alt-Tab icon, the tray icon, and the installer's icon all reference this one
-file, so replacing it updates every surface at once. `assets/logo.png` is the same mark at full
-resolution for documentation. `assets/installer-wizard-large.bmp` and `-small.bmp` are pre-rendered
-Inno Setup wizard banners generated from the logo; regenerate them (`Image.save(..., sizes=...)`
-with Pillow) rather than hand-editing, since Inno Setup's resource updater rejects an oversized
-`SetupIconFile` (see the comment in `installer/AudioAnchor.iss`).
-
-## Project documentation
-
-- [Approved full plan](docs/PLAN.md)
-- [Current handoff and verification](docs/HANDOFF.md)
-- [Test suite and hardware checklist](docs/TESTING.md)
-- [Code signing and the unknown publisher warning](docs/SIGNING.md)
-- [Agent instructions](AGENTS.md)
-
-The audio setter uses the undocumented Windows `IPolicyConfig` COM interface; it is isolated in
-`AudioAnchor.Windows`. Future Windows changes may require updating that adapter. Endpoint monitoring
-uses Microsoft's documented `IMMNotificationClient` callbacks. See PLAN.md for upstream references.
 
 ## Releases
 

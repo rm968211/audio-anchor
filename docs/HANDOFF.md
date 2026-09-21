@@ -1,4 +1,69 @@
-# Latest change: renamed SoundAnchor to AudioAnchor
+# Latest change: manual update check, and a real SoundAnchor→AudioAnchor upgrade path
+
+Added to the `simplify-readme` branch per the user's explicit instruction, alongside the README
+fixes. This release (2.0.0 to **2.0.1**, patch — no behaviour change for users who were never on
+SoundAnchor, additive elsewhere):
+
+- **Tray "Check for update."** Previously the update banner only ever appeared from the one check
+  done at startup — closing and reopening the window did nothing, so the only way to re-check was
+  restarting the whole app. Added a tray context menu item, right under Settings, that shows the
+  window and fires a fresh `CheckForUpdateAsync()`. Hidden entirely in demo mode (rather than
+  disabled or silently no-op) since `_updateSource` is never constructed there, preserving demo's
+  documented offline/network-free guarantee.
+- **SoundAnchor → AudioAnchor upgrade path.** The rename PR predicted, but didn't fix, that an
+  upgrade would leave an orphaned `SoundAnchor.exe`, an orphaned "SoundAnchor" startup registry
+  value, and unmigrated preferences in `%LOCALAPPDATA%\SoundAnchor`. The user confirmed this is a
+  real problem on their own machine (a genuine prior SoundAnchor install, startup-enabled, real
+  Voicemeeter device preferences) and asked for it handled so 1.x→2.x doesn't error and preferences
+  carry forward:
+  - `AudioAnchor.Core.SettingsMigration.MigrateSettingsFile` (new, fully unit tested): copies
+    `settings.json` from a legacy directory into the new one, only when the new directory doesn't
+    exist yet — that existence check is itself the idempotency guard, no separate "migrated" marker
+    needed.
+  - `AudioAnchor.App.LegacyMigration` (new): calls the above with the real
+    `%LOCALAPPDATA%\SoundAnchor` path, then separately migrates the startup registry value —
+    deletes the legacy "SoundAnchor" Run value and, if it existed and no "AudioAnchor" value is
+    already set, calls `StartupRegistration.Set(true)` so the carried-forward intent actually takes
+    effect under the new name/path. Both steps are independently best-effort (`IOException`/
+    `UnauthorizedAccessException`/`SecurityException` swallowed) so a failure in one never blocks
+    the other or app startup.
+  - Called from `App.xaml.cs` before `Directory.CreateDirectory(dataDirectory)`, gated `!demo`
+    only — covers both the installer and portable-ZIP paths uniformly, since only app code runs
+    for both (installer-side Pascal script cleanup can't reach portable users at all).
+  - `installer/AudioAnchor.iss`: a `[Registry] ... Flags: deletevalue` entry unconditionally clears
+    the legacy "SoundAnchor" Run value on every install (separate from and independent of the
+    Tasks-gated "AudioAnchor" value creation), and `[InstallDelete]` removes the orphaned
+    `{app}\SoundAnchor.exe`. A new `StopLegacySoundAnchor` procedure runs in `PrepareToInstall`
+    alongside the existing `StopAudioAnchor`, since the old exe could still be running under its
+    old name/mutex and would otherwise hold the file lock `[InstallDelete]` needs.
+  - `installer/AudioAnchor.iss`'s `AppId` GUID was already unchanged from the rename PR — that's
+    what makes Inno recognize this as an upgrade of the same product at all, rather than the two
+    reported symptoms (errors, unrecognized app) the user was actually seeing.
+
+Verified on 2026-09-21 with .NET SDK 10.0.401 on Windows 11: clean Release build, zero warnings,
+**39 unit/integration tests pass** (4 new `SettingsMigrationTests`, including one against this
+machine's actual real legacy `settings.json` — copied safely into an isolated temp destination via
+a throwaway `dotnet run` probe, never loaded by a running app, so the real enforcement engine never
+saw it and no real Windows audio default was touched). The FlaUI desktop scenario passed (one
+retry — a single earlier failure was a 15s UI-automation timeout immediately after the packaging
+build finished compiling, most likely system load; re-ran clean in 4s, unrelated to this change
+since both features are demo-gated off). `Build-Packages.ps1` produced 2.0.1 installer/portable
+packages with the new `[InstallDelete]`/`[Registry]` sections compiling and packaging successfully.
+
+**Not verified:** the startup-registry migration path was NOT exercised live against this machine's
+real "SoundAnchor" registry value or the real `%LOCALAPPDATA%\AudioAnchor` default location —
+deliberately, since demo mode isn't involved in `LegacyMigration` and this machine's real legacy
+settings.json has `Paused: false` with real device preferences, so letting the full app load it
+non-demo would have driven the real `WindowsAudioBackend` to switch live Windows audio defaults,
+which is exactly the kind of implicit change to the developer's real state this repo's own AGENTS.md
+prohibits. Verified instead by code review (the registry operations are the same
+`Registry.CurrentUser`/`StartupRegistration.Set` calls the existing, already-working Startup
+checkbox feature uses) and a full real install/upgrade/uninstall cycle was not run end-to-end
+against a real prior SoundAnchor installation — `scripts/Test-Installer.ps1`'s automated lifecycle
+test still only exercises fresh-install/upgrade-same-version/uninstall, not upgrade-from-legacy-name;
+extending it to simulate that would be a reasonable next step if this needs stronger CI coverage.
+
+# Previous change: renamed SoundAnchor to AudioAnchor
 
 The user discovered "SoundAnchor" is already the name of unrelated existing software and asked for
 a full rename to **AudioAnchor**. This release (1.0.0 to **2.0.0**, major — chosen because renaming

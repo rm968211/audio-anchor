@@ -46,6 +46,8 @@ public partial class MainWindow : Window
         _pauseMenu = new("Pause protection", null, (_, _) => Dispatcher.BeginInvoke(TogglePause));
         var menu = new Forms.ContextMenuStrip();
         menu.Items.Add("Settings", null, (_, _) => Dispatcher.BeginInvoke(ShowSettings));
+        // Demo mode stays offline; the update source below is never created for it, so there is nothing to check.
+        if (!demo) menu.Items.Add("Check for update", null, (_, _) => Dispatcher.BeginInvoke(() => { ShowSettings(); _ = CheckForUpdateAsync(); }));
         menu.Items.Add(_pauseMenu);
         menu.Items.Add("Restore now", null, (_, _) => _worker.Request());
         menu.Items.Add(new Forms.ToolStripSeparator());
