@@ -1,0 +1,20 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net10.0-windows</TargetFramework>
+    <UseWPF>true</UseWPF><UseWindowsForms>true</UseWindowsForms>
+    <ImplicitUsings>disable</ImplicitUsings>
+    <PlatformTarget>x64</PlatformTarget>
+    <ApplicationManifest>app.manifest</ApplicationManifest>
+    <AssemblyName>AudioAnchor</AssemblyName>
+    <Product>AudioAnchor</Product>
+    <Description>Keep your preferred Windows audio devices selected.</Description>
+    <!-- The canonical icon lives at repo root assets/ so the installer and README share one file. -->
+    <ApplicationIcon>..\..\assets\icon.ico</ApplicationIcon>
+  </PropertyGroup>
+  <ItemGroup><ProjectReference Include="../AudioAnchor.Windows/AudioAnchor.Windows.csproj" /></ItemGroup>
+  <ItemGroup>
+    <!-- Linked so the pack URI used by MainWindow.xaml and the tray icon is Assets/icon.ico regardless of the source path. -->
+    <Resource Include="..\..\assets\icon.ico" Link="Assets\icon.ico" />
+  </ItemGroup>
+</Project>

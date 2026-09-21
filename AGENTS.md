@@ -1,4 +1,4 @@
-# SoundAnchor agent handoff
+# AudioAnchor agent handoff
 
 Read `docs/PLAN.md` before changing scope and `docs/HANDOFF.md` before continuing work.
 The user approved implementation, a new GitHub repository under their authenticated account,
