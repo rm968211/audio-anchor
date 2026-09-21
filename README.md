@@ -3,16 +3,22 @@
 # SoundAnchor
 
 Tired of Windows automatically changing your default audio devices when something is plugged in? SoundAnchor is a simple Windows tray app that restores your preferred speakers and microphones whenever Windows changes the default audio devices.
-<img width="441" height="521" alt="image" src="https://github.com/user-attachments/assets/6d214017-f9c1-4df6-8c4f-0eafbb07c23a" align="center"/>
+
+<p align="center">
+  <img width="440" alt="SoundAnchor's settings window, showing protected playback and recording devices" src="https://github.com/user-attachments/assets/6d214017-f9c1-4df6-8c4f-0eafbb07c23a">
+</p>
 
 ## Installation
 
 1. Navigate to the [releases page](https://github.com/rm968211/sound-anchor/releases) and locate the latest version.
-2. Download and run the `win-x64-Setup.exe` file. For those that prefer a portable version, download the portable `.zip`, extract, and run `SoundAnchor.exe`
-   <img width="1535" height="1001" alt="image" src="https://github.com/user-attachments/assets/d31bd10c-49b7-4e66-929f-cf026ce71213" />
-> [!NOTE]
-> You may receive a popup saying "Windows protected your pc. Microsoft Defender SmartScreen prevented an unrecognized app from starting. Running this app might put your PC at risk". This is normal and you can click "more info" and "Run Anyway"
+2. Download and run the `win-x64-Setup.exe` file. For those that prefer a portable version, download the portable `.zip`, extract, and run `SoundAnchor.exe`.
 
+   <p align="center">
+     <img width="720" alt="The GitHub releases page, with the win-x64-Setup.exe asset highlighted" src="https://github.com/user-attachments/assets/d31bd10c-49b7-4e66-929f-cf026ce71213">
+   </p>
+
+> [!NOTE]
+> You may receive a popup saying "Windows protected your PC. Microsoft Defender SmartScreen prevented an unrecognized app from starting. Running this app might put your PC at risk." This is normal for a new, unsigned app — click **More info**, then **Run anyway**.
 
 ## Build and test
 
