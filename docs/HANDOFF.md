@@ -1,4 +1,45 @@
-# Latest change: removed the window Restore button, added a startup update check
+# Latest change: applied the user's SoundAnchor logo everywhere
+
+The user supplied `soundanchor logo.png`/`.ico` (a blue anchor with a sound waveform through the
+shank) from their desktop and asked for it applied everywhere appropriate. This release (0.4.0 to
+**0.5.0**, minor: user-visible branding, no behaviour change to enforcement):
+
+- `assets/icon.ico` and `assets/logo.png` are the two canonical, source-controlled copies. The
+  supplied `.ico` was 1.07 MB (uncompressed large frames) and made Inno Setup's resource updater
+  fail with "File is too large" when used as `SetupIconFile`; it was re-encoded from the PNG with
+  Pillow (`Image.save(..., sizes=[16..256])`) to the same 7 resolutions at ~56 KB, pixel-identical.
+- `SoundAnchor.App.csproj` sets `<ApplicationIcon>` from `assets/icon.ico` (linked into the project
+  as `Assets/icon.ico`) — this is the exe's Win32 icon resource, shown in Explorer, the taskbar, and
+  Alt-Tab, and it flows through to the portable ZIP and the installed app automatically.
+- `MainWindow.xaml` sets `Icon="Assets/icon.ico"` (title bar/taskbar), and the tray `NotifyIcon` now
+  loads the same embedded resource via `Application.GetResourceStream` instead of
+  `SystemIcons.Application`, disposed on exit alongside the other IDisposables.
+- `installer/SoundAnchor.iss` sets `SetupIconFile` (the installer/uninstaller's own icon) and
+  `WizardImageFile`/`WizardSmallImageFile`, two Pillow-generated BMP banners
+  (`assets/installer-wizard-large.bmp` 164×314, `-small.bmp` 55×58, white background, logo
+  centered) built once from the same source PNG — regenerate them from the PNG rather than
+  hand-editing if the logo ever changes.
+- `README.md` shows the full-resolution PNG centered at the top, and documents `assets/` as the
+  single source of truth for every surface above.
+
+Verified on 2026-09-21 with .NET SDK 10.0.401 on Windows 11: clean Release build with zero
+warnings, all 35 unit/integration tests and the FlaUI desktop scenario still pass (unaffected by
+this change), and `Build-Packages.ps1` produced 0.5.0 packages. Confirmed visually: the built exe's
+extracted icon and the running window's title-bar icon both show the anchor logo; the installer's
+own exe icon (`Get-AuthenticodeSignature`-style `ExtractAssociatedIcon`) shows the anchor; and the
+small wizard banner renders correctly top-right on the installer's "Select Additional Tasks" page.
+**Not independently screenshotted:** the large `WizardImageFile` banner and the tray icon pixels —
+Inno 6 hides the Welcome/Finished pages by default (`DisableWelcomePage` defaults to `yes`, and the
+Select Destination page auto-hides with one obvious default), so reaching them requires completing
+a real per-user install, which was intentionally not done to avoid writing the real startup
+registry entry from the installer's default-checked "start at sign-in" task; the tray icon uses the
+identical embedded resource and a standard `System.Drawing.Icon(Stream, Size)` load already proven
+via the title-bar icon and the exe's extracted icon, so it was not separately screenshotted. A
+**manual follow-up** the user can do outside this repo: GitHub's repository "social preview" image
+(Settings → General → Social preview) has no public API and must be uploaded through the web UI —
+`assets/logo.png` is the file to use there.
+
+# Previous change: removed the window Restore button, added a startup update check
 
 The user felt the window's **Restore now** button was redundant — enforcement already reacts to
 device-change notifications, a 15-second health check, and system resume, so a manual re-trigger

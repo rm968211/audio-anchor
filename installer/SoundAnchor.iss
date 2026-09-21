@@ -23,6 +23,11 @@ Compression=lzma2
 SolidCompression=yes
 WizardStyle=modern
 UninstallDisplayIcon={app}\SoundAnchor.exe
+; Inno's Win32 resource updater rejects an oversized icon ("File is too large") well below what
+; Explorer/taskbar happily display, so assets/icon.ico is kept compact (PIL-optimized, ~55 KB).
+SetupIconFile=..\assets\icon.ico
+WizardImageFile=..\assets\installer-wizard-large.bmp
+WizardSmallImageFile=..\assets\installer-wizard-small.bmp
 CloseApplications=yes
 CloseApplicationsFilter=SoundAnchor.exe
 RestartApplications=no

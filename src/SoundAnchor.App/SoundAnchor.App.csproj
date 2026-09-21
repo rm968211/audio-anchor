@@ -9,6 +9,12 @@
     <AssemblyName>SoundAnchor</AssemblyName>
     <Product>SoundAnchor</Product>
     <Description>Keep your preferred Windows audio devices selected.</Description>
+    <!-- The canonical icon lives at repo root assets/ so the installer and README share one file. -->
+    <ApplicationIcon>..\..\assets\icon.ico</ApplicationIcon>
   </PropertyGroup>
   <ItemGroup><ProjectReference Include="../SoundAnchor.Windows/SoundAnchor.Windows.csproj" /></ItemGroup>
+  <ItemGroup>
+    <!-- Linked so the pack URI used by MainWindow.xaml and the tray icon is Assets/icon.ico regardless of the source path. -->
+    <Resource Include="..\..\assets\icon.ico" Link="Assets\icon.ico" />
+  </ItemGroup>
 </Project>

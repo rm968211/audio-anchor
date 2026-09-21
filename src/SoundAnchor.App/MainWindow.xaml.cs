@@ -20,6 +20,7 @@ public partial class MainWindow : Window
     private readonly IAudioBackend _backend;
     private readonly EnforcementWorker _worker;
     private readonly Forms.NotifyIcon _tray;
+    private readonly System.Drawing.Icon _trayIcon;
     private readonly Forms.ToolStripMenuItem _pauseMenu;
     private readonly GitHubReleaseSource? _updateSource;
     private bool _exiting;
@@ -48,7 +49,8 @@ public partial class MainWindow : Window
         menu.Items.Add("Restore now", null, (_, _) => _worker.Request());
         menu.Items.Add(new Forms.ToolStripSeparator());
         menu.Items.Add("Exit", null, (_, _) => Dispatcher.BeginInvoke(ExitApplication));
-        _tray = new() { Icon = System.Drawing.SystemIcons.Application, Text = "SoundAnchor", ContextMenuStrip = menu, Visible = true };
+        _trayIcon = LoadTrayIcon();
+        _tray = new() { Icon = _trayIcon, Text = "SoundAnchor", ContextMenuStrip = menu, Visible = true };
         _tray.DoubleClick += (_, _) => ShowSettings();
         StartupCheck.IsEnabled = !demo;
         try { StartupCheck.IsChecked = !demo && StartupRegistration.Enabled; }
@@ -66,6 +68,12 @@ public partial class MainWindow : Window
         }
     }
 
+    private static System.Drawing.Icon LoadTrayIcon()
+    {
+        // Same embedded resource as the window's XAML Icon, so the tray and title bar always match.
+        using var stream = Application.GetResourceStream(new Uri("pack://application:,,,/Assets/icon.ico"))!.Stream;
+        return new System.Drawing.Icon(stream, new System.Drawing.Size(32, 32));
+    }
     private static readonly Version CurrentVersion = ReadCurrentVersion();
     private static Version ReadCurrentVersion()
     {
@@ -203,6 +211,7 @@ public partial class MainWindow : Window
         _tray.Visible = false;
         _tray.ContextMenuStrip?.Dispose();
         _tray.Dispose();
+        _trayIcon.Dispose();
         Application.Current.Shutdown();
     }
 }
