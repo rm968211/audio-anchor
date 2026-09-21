@@ -1,6 +1,9 @@
-<p align="center"><img src="assets/logo.png" width="160" alt="AudioAnchor logo"></p>
+<p align="center">
+  <a href="https://github.com/rm968211/audio-anchor/actions/workflows/build.yml"><img src="https://github.com/rm968211/audio-anchor/actions/workflows/build.yml/badge.svg" alt="Build status"></a>
+  <a href="https://www.buymeacoffee.com/rm968211"><img src="https://img.shields.io/badge/Buy%20Me%20A%20Coffee-FFDD00?style=flat&logo=buymeacoffee&logoColor=black" alt="Buy Me A Coffee"></a>
+</p>
 
-<p align="center"><a href="https://www.buymeacoffee.com/rm968211" target="_blank"><img src="https://cdn.buymeacoffee.com/buttons/v2/default-red.png" alt="Buy Me a Coffee" style="height: 60px !important;width: 217px !important;"></a></p>
+<p align="center"><img src="assets/logo.png" width="160" alt="AudioAnchor logo"></p>
 
 # AudioAnchor
 
