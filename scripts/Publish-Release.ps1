@@ -1,4 +1,4 @@
-param([Parameter(Mandatory)][string]$Version, [Parameter(Mandatory)][string]$Commit, [Parameter(Mandatory)][string]$RunId)
+param([Parameter(Mandatory)][string]$Version, [Parameter(Mandatory)][string]$Commit, [Parameter(Mandatory)][string]$RunId, [string]$ArtifactDirectory = (Join-Path (Split-Path $PSScriptRoot -Parent) 'artifacts/release'))
 $ErrorActionPreference = 'Stop'
 . (Join-Path $PSScriptRoot 'Versioning.ps1')
 $validated = ConvertTo-ProductVersion $Version
@@ -9,7 +9,7 @@ if ($LASTEXITCODE) { throw 'Cannot verify the merged pull request.' }
 $merged = @($pullsJson | ConvertFrom-Json | Where-Object { $_.merged_at -and $_.base.ref -eq 'master' -and $_.merge_commit_sha -eq $Commit })
 if ($merged.Count -eq 0) { Write-Host 'No PR merged to master at this commit; no release will be published.'; return }
 
-$directory = Join-Path (Split-Path $PSScriptRoot -Parent) 'artifacts/release'
+$directory = $ArtifactDirectory
 gh run download $RunId -n SoundAnchor-win-x64 -D $directory
 if ($LASTEXITCODE) { throw 'Cannot download this run''s verified packages.' }
 $names = @("SoundAnchor-$Version-win-x64-Portable.zip", "SoundAnchor-$Version-win-x64-Setup.exe")

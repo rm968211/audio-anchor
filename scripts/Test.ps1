@@ -4,6 +4,7 @@ $repo = Split-Path $PSScriptRoot -Parent
 Push-Location $repo
 try {
     & ./scripts/Test-Versioning.ps1
+    & ./scripts/Test-Releases.ps1
     dotnet restore SoundAnchor.slnx --configfile NuGet.config
     if ($LASTEXITCODE) { throw 'Restore failed' }
     dotnet build SoundAnchor.slnx -c Release --no-restore

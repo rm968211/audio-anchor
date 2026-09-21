@@ -1,6 +1,6 @@
 # Latest change: mandatory SemVer and merged-PR releases
 
-The user required public visibility, master as the default branch, a version.props bump in every PR, developer-selected major/minor/patch, and automatic published releases after merge. Branch protection requires up-to-date Semantic version and Build, test and package checks, including for admins. See VERSIONING.md. This feature raises 0.1.0 to 0.2.0. All 31 local versioning tests passed; this PR runs the full Windows/installer suite. Release publication is tested by merging this implementation PR. Follow the live Actions and Releases pages for its final result. This policy supersedes all historical private/draft/tag-only notes below.
+The user required public visibility, master as the default branch, a version.props bump in every PR, developer-selected major/minor/patch, and automatic published releases after merge. Branch protection requires up-to-date Semantic version and Build, test and package checks, including for admins. See VERSIONING.md. This feature raises 0.1.0 to 0.2.0. All 31 local versioning tests and 8 offline release regression tests passed; this PR runs the full Windows/installer suite. Release publication is tested by merging this implementation PR. Follow the live Actions and Releases pages for its final result. This policy supersedes all historical private/draft/tag-only notes below.
 
 # SoundAnchor — continuation handoff
 

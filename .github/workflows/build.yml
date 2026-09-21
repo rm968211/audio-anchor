@@ -24,7 +24,9 @@ jobs:
           persist-credentials: false
       - name: Test version validation
         shell: pwsh
-        run: ./scripts/Test-Versioning.ps1
+        run: |
+          ./scripts/Test-Versioning.ps1
+          ./scripts/Test-Releases.ps1
       - name: Require a developer-selected version increase
         id: version
         shell: pwsh

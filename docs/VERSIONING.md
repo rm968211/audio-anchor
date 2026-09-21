@@ -43,3 +43,7 @@ Required protection settings once supported: PR required, strict/up-to-date requ
 `Semantic version` and `Build, test and package`, administrator enforcement, no force pushes/deletion.
 
 Run `scripts/Test-Versioning.ps1` for parser, comparison, legacy migration, and real-Git baseline tests.
+
+`scripts/Test-Releases.ps1` adds eight offline publication tests: direct-push suppression, successful
+publication order, corrupted assets, conflicting tags, resuming untagged drafts, rejecting a different
+commit's draft, published-release idempotence, and upload-failure recovery. No network calls are made.
