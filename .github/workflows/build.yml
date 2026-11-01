@@ -68,13 +68,13 @@ jobs:
           ./scripts/Test-Installer.ps1 -Installer $installer.FullName
       - name: Upload test evidence
         if: always()
-        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
         with:
           name: test-results
           path: artifacts/test-results/
           if-no-files-found: warn
       - name: Upload installable packages
-        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
         with:
           name: AudioAnchor-win-x64
           path: artifacts/packages/
